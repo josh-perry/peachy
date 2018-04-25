@@ -1,22 +1,28 @@
 local aseprite = require("aseprite")
-local animations = {}
+
+local count
+local colours
 
 function love.load()
-	for i = 0, 5 do
-		table.insert(animations, aseprite.new("examples/count.json"))
-	end
+	count = aseprite.new("examples/countAndColours.json")
+	count:setTag("Numbers")
+	count:play()
 
-	animations[2]:pause()
+	colours = aseprite.new("examples/countAndColours.json")
+	colours:setTag("Colours")
+	colours:play()
 end
 
 function love.draw()
-	for i, anim in ipairs(animations) do
-		anim:draw(i * 50, 0)
-	end
+	love.graphics.print("countAndColours.json", 15, 15)
+	love.graphics.print("Numbers", 50, 50)
+	count:draw(50, 80)
+
+	love.graphics.print("Colours", 150, 50)
+	colours:draw(150, 80)
 end
 
 function love.update(dt)
-	for _, anim in ipairs(animations) do
-		anim:update(dt)
-	end
+	count:update(dt)
+	colours:update(dt)
 end

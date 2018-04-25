@@ -45,7 +45,6 @@ function aseprite.new(dataFile)
 
 	-- Initialize all the quads
 	self.frames = {}
-
 	for _, frameData in ipairs(self._jsonData.frames) do
 		local frame = {}
 
@@ -56,8 +55,21 @@ function aseprite.new(dataFile)
 		table.insert(self.frames, frame)
 	end
 
-	self.paused = false
-	self:nextFrame()
+	self.frameTags = {}
+	for _, frameTag in ipairs(self._jsonData.meta.frameTags) do
+		local ft = {}
+		ft.direction = frameTag.direction
+		ft.frames = {}
+
+		for frame = frameTag.from + 1, frameTag.to + 1 do
+			table.insert(ft.frames, self.frames[frame])
+		end
+
+		self.frameTags[frameTag.name] = ft
+	end
+
+	self.currentTag = nil
+	self.paused = true
 
 	return self
 end
@@ -68,9 +80,16 @@ function aseprite:_checkImageSize()
 	assert(imageHeight == self.image:getHeight(), "Image height metadata doesn't match actual height of file")
 end
 
+function aseprite:setTag(tag)
+	self.currentTag = self.frameTags[tag]
+	self.currentFrameIndex = nil
+
+	self:nextFrame()
+end
+
 function aseprite:draw(x, y)
 	if not self.currentFrame then
-		error("No currentFrame to draw!")
+		return
 	end
 
 	love.graphics.draw(self.image, self.currentFrame.quad, x, y)
@@ -90,12 +109,12 @@ function aseprite:nextFrame()
 	self.currentFrameIndex = (self.currentFrameIndex or 0) + 1
 
 	-- Looping
-	if self.currentFrameIndex > #self.frames then
+	if self.currentFrameIndex > #self.currentTag.frames then
 		self.currentFrameIndex = 1
 	end
 
 	-- Get next frame
-	self.currentFrame = self.frames[self.currentFrameIndex]
+	self.currentFrame = self.currentTag.frames[self.currentFrameIndex]
 
 	self.frameTimer = cron.after(self.currentFrame.duration, self.nextFrame, self)
 end
