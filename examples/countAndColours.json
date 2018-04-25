@@ -133,6 +133,42 @@
     "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 32 },
     "sourceSize": { "w": 32, "h": 32 },
     "duration": 500
+   },
+   {
+    "filename": "countAndColours 15.aseprite",
+    "frame": { "x": 480, "y": 0, "w": 32, "h": 32 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 32 },
+    "sourceSize": { "w": 32, "h": 32 },
+    "duration": 500
+   },
+   {
+    "filename": "countAndColours 16.aseprite",
+    "frame": { "x": 512, "y": 0, "w": 32, "h": 32 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 32 },
+    "sourceSize": { "w": 32, "h": 32 },
+    "duration": 500
+   },
+   {
+    "filename": "countAndColours 17.aseprite",
+    "frame": { "x": 544, "y": 0, "w": 32, "h": 32 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 32 },
+    "sourceSize": { "w": 32, "h": 32 },
+    "duration": 500
+   },
+   {
+    "filename": "countAndColours 18.aseprite",
+    "frame": { "x": 576, "y": 0, "w": 32, "h": 32 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 32 },
+    "sourceSize": { "w": 32, "h": 32 },
+    "duration": 500
    }
  ],
  "meta": {
@@ -140,12 +176,13 @@
   "version": "1.2.8-x64",
   "image": "examples/countAndColours.png",
   "format": "RGBA8888",
-  "size": { "w": 480, "h": 32 },
+  "size": { "w": 608, "h": 32 },
   "scale": "1",
   "frameTags": [
    { "name": "Numbers", "from": 0, "to": 3, "direction": "forward" },
    { "name": "Colours", "from": 4, "to": 10, "direction": "forward" },
-   { "name": "NumbersDown", "from": 11, "to": 14, "direction": "reverse" }
+   { "name": "NumbersDown", "from": 11, "to": 14, "direction": "reverse" },
+   { "name": "PingPong", "from": 15, "to": 18, "direction": "pingpong" }
   ],
   "layers": [
    { "name": "Layer 1", "opacity": 255, "blendMode": "normal" }

@@ -86,6 +86,10 @@ function aseprite:setTag(tag)
 	self.currentFrameIndex = nil
 	self.currentDirection = self.currentTag.direction
 
+	if self.currentDirection == "pingpong" then
+		self.currentDirection = "forward"
+	end
+
 	self:nextFrame()
 end
 
@@ -117,15 +121,35 @@ function aseprite:nextFrame()
 
 	-- Looping
 	if forward and self.currentFrameIndex > #self.currentTag.frames then
-		self.currentFrameIndex = 1
+		if self.currentTag.direction == "pingpong" then
+			self:_pingpongBounce()
+		else
+			self.currentFrameIndex = 1
+		end
 	elseif not forward and self.currentFrameIndex < 1 then
-		self.currentFrameIndex = #self.currentTag.frames
+		if self.currentTag.direction == "pingpong" then
+			self:_pingpongBounce()
+		else
+			self.currentFrameIndex = #self.currentTag.frames
+		end
 	end
 
 	-- Get next frame
 	self.currentFrame = self.currentTag.frames[self.currentFrameIndex]
 
 	self.frameTimer = cron.after(self.currentFrame.duration, self.nextFrame, self)
+end
+
+function aseprite:_pingpongBounce()
+	-- We need to increment/decrement frame index by 2 because
+	-- at this point we've already gone to the next frame
+	if self.currentDirection == "forward" then
+		self.currentDirection = "reverse"
+		self.currentFrameIndex = self.currentFrameIndex - 2
+	else
+		self.currentDirection = "forward"
+		self.currentFrameIndex = self.currentFrameIndex + 2
+	end
 end
 
 function aseprite:pause()
