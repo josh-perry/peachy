@@ -69,6 +69,7 @@ function aseprite.new(dataFile)
 	end
 
 	self.currentTag = nil
+	self.currentDirection = nil
 	self.paused = true
 
 	return self
@@ -83,6 +84,7 @@ end
 function aseprite:setTag(tag)
 	self.currentTag = self.frameTags[tag]
 	self.currentFrameIndex = nil
+	self.currentDirection = self.currentTag.direction
 
 	self:nextFrame()
 end
@@ -105,12 +107,19 @@ function aseprite:update(dt)
 end
 
 function aseprite:nextFrame()
-	-- If currentFrameIndex isn't set then default to 1
-	self.currentFrameIndex = (self.currentFrameIndex or 0) + 1
+	local forward = self.currentDirection == "forward"
+
+	if forward then
+		self.currentFrameIndex = (self.currentFrameIndex or 0) + 1
+	else
+		self.currentFrameIndex = (self.currentFrameIndex or #self.currentTag.frames + 1) - 1
+	end
 
 	-- Looping
-	if self.currentFrameIndex > #self.currentTag.frames then
+	if forward and self.currentFrameIndex > #self.currentTag.frames then
 		self.currentFrameIndex = 1
+	elseif not forward and self.currentFrameIndex < 1 then
+		self.currentFrameIndex = #self.currentTag.frames
 	end
 
 	-- Get next frame
