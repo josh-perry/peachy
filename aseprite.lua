@@ -70,8 +70,8 @@ function aseprite.new(dataFile, imageData, initialTag)
 
 	self.paused = true
 
-	self.currentTag = nil
-	self.currentDirection = nil
+	self.tag = nil
+	self.direction = nil
 
 	if initialTag then
 		self:setTag(initialTag)
@@ -88,27 +88,27 @@ function aseprite:_checkImageSize()
 end
 
 function aseprite:setTag(tag)
-	if self.currentTag == self.frameTags[tag] then
+	if self.tag == self.frameTags[tag] then
 		return
 	end
 
-	self.currentTag = self.frameTags[tag]
-	self.currentFrameIndex = nil
-	self.currentDirection = self.currentTag.direction
+	self.tag = self.frameTags[tag]
+	self.frameIndex = nil
+	self.direction = self.tag.direction
 
-	if self.currentDirection == "pingpong" then
-		self.currentDirection = "forward"
+	if self.direction == "pingpong" then
+		self.direction = "forward"
 	end
 
 	self:nextFrame()
 end
 
 function aseprite:draw(x, y)
-	if not self.currentFrame then
+	if not self.frame then
 		return
 	end
 
-	love.graphics.draw(self.image, self.currentFrame.quad, x, y)
+	love.graphics.draw(self.image, self.frame.quad, x, y)
 end
 
 function aseprite:update(dt)
@@ -118,7 +118,7 @@ function aseprite:update(dt)
 
 	-- If we're trying to play an animation and it's nil or hasn't been set up
 	-- properly then error
-	assert(self.currentTag, "No animation tag has been set!")
+	assert(self.tag, "No animation tag has been set!")
 	assert(self.frameTimer, "Frame timer hasn't been initialized!")
 
 	-- Update timer in milliseconds since that's how Aseprite stores durations
@@ -126,44 +126,44 @@ function aseprite:update(dt)
 end
 
 function aseprite:nextFrame()
-	local forward = self.currentDirection == "forward"
+	local forward = self.direction == "forward"
 
 	if forward then
-		self.currentFrameIndex = (self.currentFrameIndex or 0) + 1
+		self.frameIndex = (self.frameIndex or 0) + 1
 	else
-		self.currentFrameIndex = (self.currentFrameIndex or #self.currentTag.frames + 1) - 1
+		self.frameIndex = (self.frameIndex or #self.tag.frames + 1) - 1
 	end
 
 	-- Looping
-	if forward and self.currentFrameIndex > #self.currentTag.frames then
-		if self.currentTag.direction == "pingpong" then
+	if forward and self.frameIndex > #self.tag.frames then
+		if self.tag.direction == "pingpong" then
 			self:_pingpongBounce()
 		else
-			self.currentFrameIndex = 1
+			self.frameIndex = 1
 		end
-	elseif not forward and self.currentFrameIndex < 1 then
-		if self.currentTag.direction == "pingpong" then
+	elseif not forward and self.frameIndex < 1 then
+		if self.tag.direction == "pingpong" then
 			self:_pingpongBounce()
 		else
-			self.currentFrameIndex = #self.currentTag.frames
+			self.frameIndex = #self.tag.frames
 		end
 	end
 
 	-- Get next frame
-	self.currentFrame = self.currentTag.frames[self.currentFrameIndex]
+	self.frame = self.tag.frames[self.frameIndex]
 
-	self.frameTimer = cron.after(self.currentFrame.duration, self.nextFrame, self)
+	self.frameTimer = cron.after(self.frame.duration, self.nextFrame, self)
 end
 
 function aseprite:_pingpongBounce()
 	-- We need to increment/decrement frame index by 2 because
 	-- at this point we've already gone to the next frame
-	if self.currentDirection == "forward" then
-		self.currentDirection = "reverse"
-		self.currentFrameIndex = self.currentFrameIndex - 2
+	if self.direction == "forward" then
+		self.direction = "reverse"
+		self.frameIndex = self.frameIndex - 2
 	else
-		self.currentDirection = "forward"
-		self.currentFrameIndex = self.currentFrameIndex + 2
+		self.direction = "forward"
+		self.frameIndex = self.frameIndex + 2
 	end
 end
 
