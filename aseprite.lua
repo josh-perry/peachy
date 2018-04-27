@@ -75,7 +75,7 @@ function aseprite.new(dataFile, imageData, initialTag)
 		self:setTag(initialTag)
 	end
 
-	self.paused = true
+	self.paused = false
 
 	return self
 end

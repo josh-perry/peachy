@@ -10,16 +10,9 @@ function love.load()
 	spriteSheet = love.graphics.newImage("examples/countAndColours.png")
 
 	count = aseprite.new("examples/countAndColours.json", spriteSheet, "Numbers")
-	count:play()
-
 	colours = aseprite.new("examples/countAndColours.json", spriteSheet, "Colours")
-	colours:play()
-
 	countReverse = aseprite.new("examples/countAndColours.json", spriteSheet, "NumbersDown")
-	countReverse:play()
-
 	countPingPong = aseprite.new("examples/countAndColours.json", spriteSheet, "PingPong")
-	countPingPong:play()
 end
 
 function love.draw()
