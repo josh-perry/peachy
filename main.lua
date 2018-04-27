@@ -5,6 +5,7 @@ local colours
 local countReverse
 local countPingPong
 local spriteSheet
+local man = require("examples/man")
 
 function love.load()
 	spriteSheet = love.graphics.newImage("examples/countAndColours.png")
@@ -17,17 +18,22 @@ end
 
 function love.draw()
 	love.graphics.print("countAndColours.json", 15, 15)
-	love.graphics.print("Numbers", 50, 50)
+	love.graphics.print("Tag", 50, 50)
 	count:draw(50, 80)
 
-	love.graphics.print("Colours", 150, 50)
+	love.graphics.print("Different tag", 150, 50)
 	colours:draw(150, 80)
 
-	love.graphics.print("Numbers reverse", 250, 50)
+	love.graphics.print("Reverse", 250, 50)
 	countReverse:draw(250, 80)
 
-	love.graphics.print("Numbers ping pong", 350, 50)
+	love.graphics.print("Ping-Pong", 350, 50)
 	countPingPong:draw(350, 80)
+
+	love.graphics.print("man.json", 15, 215)
+	love.graphics.print("Walk around with arrow keys", 50, 250)
+
+	man.sprite:draw(man.x, man.y)
 end
 
 function love.update(dt)
@@ -35,4 +41,7 @@ function love.update(dt)
 	colours:update(dt)
 	countReverse:update(dt)
 	countPingPong:update(dt)
+
+	man:movement(dt)
+	man.sprite:update(dt)
 end
