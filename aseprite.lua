@@ -68,14 +68,15 @@ function aseprite.new(dataFile, imageData, initialTag)
 		self.frameTags[frameTag.name] = ft
 	end
 
+	self.paused = true
+
 	self.currentTag = nil
 	self.currentDirection = nil
 
 	if initialTag then
 		self:setTag(initialTag)
+		self.paused = false
 	end
-
-	self.paused = false
 
 	return self
 end
@@ -110,6 +111,11 @@ function aseprite:update(dt)
 	if self.paused then
 		return
 	end
+
+	-- If we're trying to play an animation and it's nil or hasn't been set up
+	-- properly then error
+	assert(self.currentTag, "No animation tag has been set!")
+	assert(self.frameTimer, "Frame timer hasn't been initialized!")
 
 	-- Update timer in milliseconds since that's how Aseprite stores durations
 	self.frameTimer:update(dt * 1000)
