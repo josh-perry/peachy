@@ -88,6 +88,10 @@ function aseprite:_checkImageSize()
 end
 
 function aseprite:setTag(tag)
+	if self.currentTag == self.frameTags[tag] then
+		return
+	end
+
 	self.currentTag = self.frameTags[tag]
 	self.currentFrameIndex = nil
 	self.currentDirection = self.currentTag.direction
