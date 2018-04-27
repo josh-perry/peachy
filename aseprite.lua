@@ -32,14 +32,14 @@ local cron = require("lib/cron")
 
 aseprite.__index = aseprite
 
-function aseprite.new(dataFile)
+function aseprite.new(dataFile, imageData)
 	local self = setmetatable({}, aseprite)
 
 	-- Read the data
 	self._jsonData = json.decode(love.filesystem.read(dataFile))
 
 	-- Load the image
-	self.image = love.graphics.newImage(self._jsonData.meta.image)
+	self.image = imageData or love.graphics.newImage(self._jsonData.meta.image)
 
 	self:_checkImageSize()
 

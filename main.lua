@@ -4,21 +4,24 @@ local count
 local colours
 local countReverse
 local countPingPong
+local spriteSheet
 
 function love.load()
-	count = aseprite.new("examples/countAndColours.json")
+	spriteSheet = love.graphics.newImage("examples/countAndColours.png")
+
+	count = aseprite.new("examples/countAndColours.json", spriteSheet)
 	count:setTag("Numbers")
 	count:play()
 
-	colours = aseprite.new("examples/countAndColours.json")
+	colours = aseprite.new("examples/countAndColours.json", spriteSheet)
 	colours:setTag("Colours")
 	colours:play()
 
-	countReverse = aseprite.new("examples/countAndColours.json")
+	countReverse = aseprite.new("examples/countAndColours.json", spriteSheet)
 	countReverse:setTag("NumbersDown")
 	countReverse:play()
 
-	countPingPong = aseprite.new("examples/countAndColours.json")
+	countPingPong = aseprite.new("examples/countAndColours.json", spriteSheet)
 	countPingPong:setTag("PingPong")
 	countPingPong:play()
 end
