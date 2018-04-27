@@ -84,7 +84,7 @@
  "meta": {
   "app": "http://www.aseprite.org/",
   "version": "1.2.8-x64",
-  "image": "G:\\Projects\\aseprite\\examples\\spinner.png",
+  "image": "examples/spinner.png",
   "format": "RGBA8888",
   "size": { "w": 1152, "h": 128 },
   "scale": "1",
