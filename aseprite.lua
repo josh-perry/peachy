@@ -32,7 +32,7 @@ local cron = require("lib/cron")
 
 aseprite.__index = aseprite
 
-function aseprite.new(dataFile, imageData)
+function aseprite.new(dataFile, imageData, initialTag)
 	local self = setmetatable({}, aseprite)
 
 	-- Read the data
@@ -70,6 +70,11 @@ function aseprite.new(dataFile, imageData)
 
 	self.currentTag = nil
 	self.currentDirection = nil
+
+	if initialTag then
+		self:setTag(initialTag)
+	end
+
 	self.paused = true
 
 	return self
