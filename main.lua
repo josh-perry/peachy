@@ -4,6 +4,7 @@ local count
 local colours
 local countReverse
 local countPingPong
+local spinner
 local spriteSheet
 local man = require("examples/man")
 
@@ -14,6 +15,8 @@ function love.load()
 	colours = aseprite.new("examples/countAndColours.json", spriteSheet, "Colours")
 	countReverse = aseprite.new("examples/countAndColours.json", spriteSheet, "NumbersDown")
 	countPingPong = aseprite.new("examples/countAndColours.json", spriteSheet, "PingPong")
+
+	spinner = aseprite.new("examples/spinner.json", love.graphics.newImage("examples/spinner.png"), "Spin")
 end
 
 function love.draw()
@@ -32,8 +35,11 @@ function love.draw()
 
 	love.graphics.print("man.json", 15, 215)
 	love.graphics.print("Walk around with arrow keys", 50, 250)
-
 	man.sprite:draw(man.x, man.y)
+
+	love.graphics.print("spinner.json", 15, 415)
+	love.graphics.print("Press space to pause/play", 50, 450)
+	spinner:draw(50, 480)
 end
 
 function love.update(dt)
@@ -41,7 +47,18 @@ function love.update(dt)
 	colours:update(dt)
 	countReverse:update(dt)
 	countPingPong:update(dt)
+	spinner:update(dt)
 
 	man:movement(dt)
 	man.sprite:update(dt)
+end
+
+function love.keypressed(key)
+	if key == "space" then
+		if spinner.paused then
+			spinner:play()
+		else
+			spinner:pause()
+		end
+	end
 end
