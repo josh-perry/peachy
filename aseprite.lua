@@ -71,6 +71,7 @@ function aseprite.new(dataFile, imageData, initialTag)
 	self.paused = true
 
 	self.tag = nil
+	self.tagName = nil
 	self.direction = nil
 
 	if initialTag then
@@ -92,7 +93,8 @@ function aseprite:setTag(tag)
 		return
 	end
 
-	self.tag = self.frameTags[tag]
+	self.tagName = tag
+	self.tag = self.frameTags[self.tagName]
 	self.frameIndex = nil
 	self.direction = self.tag.direction
 

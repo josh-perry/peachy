@@ -35,6 +35,8 @@ function love.draw()
 
 	love.graphics.print("man.json", 15, 215)
 	love.graphics.print("Walk around with arrow keys", 50, 250)
+	love.graphics.print(man.sprite.tagName, man.x, man.y + 30)
+	love.graphics.print((man.sprite.paused and "Paused" or "Playing"), man.x, man.y + 45)
 	man.sprite:draw(man.x, man.y)
 
 	love.graphics.print("spinner.json", 15, 415)
