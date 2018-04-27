@@ -175,4 +175,12 @@ function aseprite:play()
 	self.paused = false
 end
 
+function aseprite:togglePlay()
+	if self.paused then
+		self:play()
+	else
+		self:pause()
+	end
+end
+
 return aseprite

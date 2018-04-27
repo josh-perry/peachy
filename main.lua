@@ -55,10 +55,6 @@ end
 
 function love.keypressed(key)
 	if key == "space" then
-		if spinner.paused then
-			spinner:play()
-		else
-			spinner:pause()
-		end
+		spinner:togglePlay()
 	end
 end
