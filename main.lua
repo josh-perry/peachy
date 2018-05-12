@@ -8,6 +8,8 @@ local spinner
 local spriteSheet
 local man = require("examples/man")
 
+local blip
+
 function love.load()
   spriteSheet = love.graphics.newImage("examples/countAndColours.png")
 
@@ -17,6 +19,10 @@ function love.load()
   countPingPong = aseprite.new("examples/countAndColours.json", spriteSheet, "PingPong")
 
   spinner = aseprite.new("examples/spinner.json", love.graphics.newImage("examples/spinner.png"), "Spin")
+
+  sound = aseprite.new("examples/sound.json", love.graphics.newImage("examples/sound.png"), "Bounce")
+  blip = love.audio.newSource("examples/blip.wav", "static")
+  blip:setVolume(0.3)
 end
 
 function love.draw()
@@ -43,6 +49,10 @@ function love.draw()
   love.graphics.print("spinner.json", 15, 415)
   love.graphics.print("Press space to pause/play", 50, 450)
   spinner:draw(50, 480)
+
+  love.graphics.print("sound.json", 415, 215)
+  love.graphics.print("Press space to pause/play", 450, 250)
+  sound:draw(450, 280)
 end
 
 function love.update(dt)
@@ -51,13 +61,19 @@ function love.update(dt)
   countReverse:update(dt)
   countPingPong:update(dt)
   spinner:update(dt)
+  sound:update(dt)
 
   man:movement(dt)
   man.sprite:update(dt)
+
+  if not sound.paused and sound.frameIndex == 1 or sound.frameIndex == 16 then
+    blip:play()
+  end
 end
 
 function love.keypressed(key)
   if key == "space" then
     spinner:togglePlay()
+    sound:togglePlay()
   end
 end
