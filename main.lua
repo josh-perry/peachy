@@ -1,4 +1,4 @@
-local aseprite = require("aseprite")
+local peachy = require("peachy")
 
 local count
 local colours
@@ -13,14 +13,14 @@ local blip
 function love.load()
   spriteSheet = love.graphics.newImage("examples/countAndColours.png")
 
-  count = aseprite.new("examples/countAndColours.json", spriteSheet, "Numbers")
-  colours = aseprite.new("examples/countAndColours.json", spriteSheet, "Colours")
-  countReverse = aseprite.new("examples/countAndColours.json", spriteSheet, "NumbersDown")
-  countPingPong = aseprite.new("examples/countAndColours.json", spriteSheet, "PingPong")
+  count = peachy.new("examples/countAndColours.json", spriteSheet, "Numbers")
+  colours = peachy.new("examples/countAndColours.json", spriteSheet, "Colours")
+  countReverse = peachy.new("examples/countAndColours.json", spriteSheet, "NumbersDown")
+  countPingPong = peachy.new("examples/countAndColours.json", spriteSheet, "PingPong")
 
-  spinner = aseprite.new("examples/spinner.json", love.graphics.newImage("examples/spinner.png"), "Spin")
+  spinner = peachy.new("examples/spinner.json", love.graphics.newImage("examples/spinner.png"), "Spin")
 
-  sound = aseprite.new("examples/sound.json", love.graphics.newImage("examples/sound.png"), "Bounce")
+  sound = peachy.new("examples/sound.json", love.graphics.newImage("examples/sound.png"), "Bounce")
   blip = love.audio.newSource("examples/blip.wav", "static")
   blip:setVolume(0.3)
 end

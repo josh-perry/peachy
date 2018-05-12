@@ -1,7 +1,7 @@
-local aseprite = {
+local peachy = {
   _VERSION = "",
   _DESCRIPTION = "A parser/renderer for Aseprite animations in LÖVE.",
-  _URL = "https://github.com/josh-perry",
+  _URL = "https://github.com/josh-perry/peachy",
   _LICENSE = [[
     MIT License
 
@@ -31,10 +31,10 @@ local PATH = select('1', ...):match(".+%.") or ""
 local json = require(PATH.."/lib/json")
 local cron = require(PATH.."/lib/cron")
 
-aseprite.__index = aseprite
+peachy.__index = peachy
 
-function aseprite.new(dataFile, imageData, initialTag)
-  local self = setmetatable({}, aseprite)
+function peachy.new(dataFile, imageData, initialTag)
+  local self = setmetatable({}, peachy)
 
   -- Read the data
   self._jsonData = json.decode(love.filesystem.read(dataFile))
@@ -83,13 +83,13 @@ function aseprite.new(dataFile, imageData, initialTag)
   return self
 end
 
-function aseprite:_checkImageSize()
+function peachy:_checkImageSize()
   local imageWidth, imageHeight = self._jsonData.meta.size.w, self._jsonData.meta.size.h
   assert(imageWidth == self.image:getWidth(), "Image width metadata doesn't match actual width of file")
   assert(imageHeight == self.image:getHeight(), "Image height metadata doesn't match actual height of file")
 end
 
-function aseprite:setTag(tag)
+function peachy:setTag(tag)
   if self.tag == self.frameTags[tag] then
     return
   end
@@ -106,7 +106,7 @@ function aseprite:setTag(tag)
   self:nextFrame()
 end
 
-function aseprite:draw(x, y)
+function peachy:draw(x, y)
   if not self.frame then
     return
   end
@@ -114,7 +114,7 @@ function aseprite:draw(x, y)
   love.graphics.draw(self.image, self.frame.quad, x, y)
 end
 
-function aseprite:update(dt)
+function peachy:update(dt)
   if self.paused then
     return
   end
@@ -128,7 +128,7 @@ function aseprite:update(dt)
   self.frameTimer:update(dt * 1000)
 end
 
-function aseprite:nextFrame()
+function peachy:nextFrame()
   local forward = self.direction == "forward"
 
   if forward then
@@ -158,7 +158,7 @@ function aseprite:nextFrame()
   self.frameTimer = cron.after(self.frame.duration, self.nextFrame, self)
 end
 
-function aseprite:_pingpongBounce()
+function peachy:_pingpongBounce()
   -- We need to increment/decrement frame index by 2 because
   -- at this point we've already gone to the next frame
   if self.direction == "forward" then
@@ -170,15 +170,15 @@ function aseprite:_pingpongBounce()
   end
 end
 
-function aseprite:pause()
+function peachy:pause()
   self.paused = true
 end
 
-function aseprite:play()
+function peachy:play()
   self.paused = false
 end
 
-function aseprite:togglePlay()
+function peachy:togglePlay()
   if self.paused then
     self:play()
   else
@@ -186,4 +186,4 @@ function aseprite:togglePlay()
   end
 end
 
-return aseprite
+return peachy

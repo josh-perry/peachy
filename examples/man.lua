@@ -1,4 +1,4 @@
-local aseprite = require("aseprite")
+local peachy = require("peachy")
 
 local man = {}
 
@@ -24,6 +24,6 @@ end
 
 man.speed = 80
 man.x, man.y = 50, 280
-man.sprite = aseprite.new("examples/man.json", love.graphics.newImage("examples/man.png"), "WalkDown")
+man.sprite = peachy.new("examples/man.json", love.graphics.newImage("examples/man.png"), "WalkDown")
 
 return man
