@@ -27,8 +27,9 @@ local aseprite = {
   ]]
 }
 
-local json = require("lib/json")
-local cron = require("lib/cron")
+local PATH = select('1', ...):match(".+%.") or ""
+local json = require(PATH.."/lib/json")
+local cron = require(PATH.."/lib/cron")
 
 aseprite.__index = aseprite
 
