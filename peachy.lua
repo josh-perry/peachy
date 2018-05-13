@@ -1,5 +1,5 @@
 local peachy = {
-  _VERSION = "",
+  _VERSION = "1.0.0-alpha",
   _DESCRIPTION = "A parser/renderer for Aseprite animations in LÖVE.",
   _URL = "https://github.com/josh-perry/peachy",
   _LICENSE = [[
