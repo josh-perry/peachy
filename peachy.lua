@@ -34,6 +34,8 @@ local cron = require(PATH.."/lib/cron")
 peachy.__index = peachy
 
 function peachy.new(dataFile, imageData, initialTag)
+  assert(dataFile ~= nil, "No JSON data!")
+
   local self = setmetatable({}, peachy)
 
   -- Read the data
@@ -44,30 +46,8 @@ function peachy.new(dataFile, imageData, initialTag)
 
   self:_checkImageSize()
 
-  -- Initialize all the quads
-  self.frames = {}
-  for _, frameData in ipairs(self._jsonData.frames) do
-    local frame = {}
-
-    local fd = frameData.frame
-    frame.quad = love.graphics.newQuad(fd.x, fd.y, fd.w, fd.h, self._jsonData.meta.size.w, self._jsonData.meta.size.h)
-    frame.duration = frameData.duration
-
-    table.insert(self.frames, frame)
-  end
-
-  self.frameTags = {}
-  for _, frameTag in ipairs(self._jsonData.meta.frameTags) do
-    local ft = {}
-    ft.direction = frameTag.direction
-    ft.frames = {}
-
-    for frame = frameTag.from + 1, frameTag.to + 1 do
-      table.insert(ft.frames, self.frames[frame])
-    end
-
-    self.frameTags[frameTag.name] = ft
-  end
+  self:_initializeQuads()
+  self:_initializeTags()
 
   self.paused = true
 
@@ -83,6 +63,44 @@ function peachy.new(dataFile, imageData, initialTag)
   return self
 end
 
+function peachy:_initializeQuads()
+  assert(self._jsonData ~= nil, "No JSON data!")
+  assert(self._jsonData.meta ~= nil, "No metadata in JSON!")
+  assert(self._jsonData.frames ~= nil, "No frame data in JSON!")
+
+  -- Initialize all the quads
+  self.frames = {}
+  for _, frameData in ipairs(self._jsonData.frames) do
+    local frame = {}
+
+    local fd = frameData.frame
+    frame.quad = love.graphics.newQuad(fd.x, fd.y, fd.w, fd.h, self._jsonData.meta.size.w, self._jsonData.meta.size.h)
+    frame.duration = frameData.duration
+
+    table.insert(self.frames, frame)
+  end
+end
+
+function peachy:_initializeTags()
+  assert(self._jsonData ~= nil, "No JSON data!")
+  assert(self._jsonData.meta ~= nil, "No metadata in JSON!")
+  assert(self._jsonData.meta.frameTags ~= nil, "No frame tags in JSON! Make sure you exported them in Aseprite!")
+
+  self.frameTags = {}
+
+  for _, frameTag in ipairs(self._jsonData.meta.frameTags) do
+    local ft = {}
+    ft.direction = frameTag.direction
+    ft.frames = {}
+
+    for frame = frameTag.from + 1, frameTag.to + 1 do
+      table.insert(ft.frames, self.frames[frame])
+    end
+
+    self.frameTags[frameTag.name] = ft
+  end
+end
+
 function peachy:_checkImageSize()
   local imageWidth, imageHeight = self._jsonData.meta.size.w, self._jsonData.meta.size.h
   assert(imageWidth == self.image:getWidth(), "Image width metadata doesn't match actual width of file")
@@ -90,6 +108,9 @@ function peachy:_checkImageSize()
 end
 
 function peachy:setTag(tag)
+  assert(tag, "No animation tag specified!")
+  assert(self.frameTags[tag], "Tag "..tag.." not found in frametags!")
+
   if self.tag == self.frameTags[tag] then
     return
   end
@@ -115,6 +136,8 @@ function peachy:draw(x, y)
 end
 
 function peachy:update(dt)
+  assert(dt, "No dt passed into update!")
+
   if self.paused then
     return
   end
