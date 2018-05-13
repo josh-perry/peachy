@@ -5,7 +5,7 @@ A parser/renderer for Aseprite animations in LÖVE.
 Draw some animations in Aseprite and export the file as a spritesheet:
 ![Aseprite export](docs/img/aseprite_export.png)
 
-Make sure that you export JSON data with frame tags.
+Make sure that you export JSON data with frame tags and that you have at least one tag defined. Even if there is a single animation in the file, you **still** need to set up frame tags.
 
 ```lua
 -- Load an aseprite animation file called spinner.json, with the image
