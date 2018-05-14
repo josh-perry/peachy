@@ -28,7 +28,9 @@ If you don't specify an image to load in new by passing nil or false as the seco
 See main.lua for further examples.
 
 # Documentation
-Docs are written in [LDoc](https://github.com/stevedonovan/LDoc/) in [peachy.lua](peachy.lua). The docs themselves are in the `docs` folder in this repository and are hosted on GitHub pages [here](https://josh-perry.github.io/peachy/).
+[Documentation is hosted on GitHub pages](https://josh-perry.github.io/peachy/) from the `docs` folder in this repository.
+
+They're written in [LDoc](https://github.com/stevedonovan/LDoc/) in [peachy.lua](peachy.lua) if you want to make a change to them.
 
 ## Building
 If you want to build the documentation yourself for whatever reason then:
