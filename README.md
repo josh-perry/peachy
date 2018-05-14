@@ -27,6 +27,17 @@ If you don't specify an image to load in new by passing nil or false as the seco
 # Examples
 See main.lua for further examples.
 
+# Documentation
+Docs are written in [LDoc](https://github.com/stevedonovan/LDoc/) in [peachy.lua](peachy.lua). The docs themselves are in the `docs` folder in this repository and are hosted on GitHub pages [here](https://josh-perry.github.io/peachy/).
+
+## Building
+If you want to build the documentation yourself for whatever reason then:
+
+* install [LDoc](https://github.com/stevedonovan/LDoc/)
+* Run `ldoc.lua peachy.lua -d docs`
+
+This will build them into the docs directory.
+
 # Limitations
 * By default Aseprite will export a **non-relative** path as the image file. This is problematic because LÖVE will refuse to load it and it's non-portable. There's a workaround listed [here](https://github.com/aseprite/aseprite/issues/1606). Either specify the image yourself in `peachy.new`, edit the JSON manually or use the CLI.
 * Exported sprite sheets **must** be exported as an array, **not** as a hash table.
