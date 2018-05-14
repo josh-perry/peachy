@@ -63,50 +63,6 @@ function peachy.new(dataFile, imageData, initialTag)
   return self
 end
 
-function peachy:_initializeQuads()
-  assert(self._jsonData ~= nil, "No JSON data!")
-  assert(self._jsonData.meta ~= nil, "No metadata in JSON!")
-  assert(self._jsonData.frames ~= nil, "No frame data in JSON!")
-
-  -- Initialize all the quads
-  self.frames = {}
-  for _, frameData in ipairs(self._jsonData.frames) do
-    local frame = {}
-
-    local fd = frameData.frame
-    frame.quad = love.graphics.newQuad(fd.x, fd.y, fd.w, fd.h, self._jsonData.meta.size.w, self._jsonData.meta.size.h)
-    frame.duration = frameData.duration
-
-    table.insert(self.frames, frame)
-  end
-end
-
-function peachy:_initializeTags()
-  assert(self._jsonData ~= nil, "No JSON data!")
-  assert(self._jsonData.meta ~= nil, "No metadata in JSON!")
-  assert(self._jsonData.meta.frameTags ~= nil, "No frame tags in JSON! Make sure you exported them in Aseprite!")
-
-  self.frameTags = {}
-
-  for _, frameTag in ipairs(self._jsonData.meta.frameTags) do
-    local ft = {}
-    ft.direction = frameTag.direction
-    ft.frames = {}
-
-    for frame = frameTag.from + 1, frameTag.to + 1 do
-      table.insert(ft.frames, self.frames[frame])
-    end
-
-    self.frameTags[frameTag.name] = ft
-  end
-end
-
-function peachy:_checkImageSize()
-  local imageWidth, imageHeight = self._jsonData.meta.size.w, self._jsonData.meta.size.h
-  assert(imageWidth == self.image:getWidth(), "Image width metadata doesn't match actual width of file")
-  assert(imageHeight == self.image:getHeight(), "Image height metadata doesn't match actual height of file")
-end
-
 function peachy:setTag(tag)
   assert(tag, "No animation tag specified!")
   assert(self.frameTags[tag], "Tag "..tag.." not found in frametags!")
@@ -181,18 +137,6 @@ function peachy:nextFrame()
   self.frameTimer = cron.after(self.frame.duration, self.nextFrame, self)
 end
 
-function peachy:_pingpongBounce()
-  -- We need to increment/decrement frame index by 2 because
-  -- at this point we've already gone to the next frame
-  if self.direction == "forward" then
-    self.direction = "reverse"
-    self.frameIndex = self.frameIndex - 2
-  else
-    self.direction = "forward"
-    self.frameIndex = self.frameIndex + 2
-  end
-end
-
 function peachy:pause()
   self.paused = true
 end
@@ -207,6 +151,62 @@ function peachy:togglePlay()
   else
     self:pause()
   end
+end
+
+function peachy:_pingpongBounce()
+  -- We need to increment/decrement frame index by 2 because
+  -- at this point we've already gone to the next frame
+  if self.direction == "forward" then
+    self.direction = "reverse"
+    self.frameIndex = self.frameIndex - 2
+  else
+    self.direction = "forward"
+    self.frameIndex = self.frameIndex + 2
+  end
+end
+
+function peachy:_initializeQuads()
+  assert(self._jsonData ~= nil, "No JSON data!")
+  assert(self._jsonData.meta ~= nil, "No metadata in JSON!")
+  assert(self._jsonData.frames ~= nil, "No frame data in JSON!")
+
+  -- Initialize all the quads
+  self.frames = {}
+  for _, frameData in ipairs(self._jsonData.frames) do
+    local frame = {}
+
+    local fd = frameData.frame
+    frame.quad = love.graphics.newQuad(fd.x, fd.y, fd.w, fd.h, self._jsonData.meta.size.w, self._jsonData.meta.size.h)
+    frame.duration = frameData.duration
+
+    table.insert(self.frames, frame)
+  end
+end
+
+function peachy:_initializeTags()
+  assert(self._jsonData ~= nil, "No JSON data!")
+  assert(self._jsonData.meta ~= nil, "No metadata in JSON!")
+  assert(self._jsonData.meta.frameTags ~= nil, "No frame tags in JSON! Make sure you exported them in Aseprite!")
+
+  self.frameTags = {}
+
+  for _, frameTag in ipairs(self._jsonData.meta.frameTags) do
+    local ft = {}
+    ft.direction = frameTag.direction
+    ft.frames = {}
+
+    for frame = frameTag.from + 1, frameTag.to + 1 do
+      table.insert(ft.frames, self.frames[frame])
+    end
+
+    self.frameTags[frameTag.name] = ft
+  end
+end
+
+function peachy:_checkImageSize()
+  local imageWidth, imageHeight = self._jsonData.meta.size.w, self._jsonData.meta.size.h
+  assert(imageWidth == self.image:getWidth(), "Image width metadata doesn't match actual width of file")
+  assert(imageHeight == self.image:getHeight(), "Image height metadata doesn't match actual height of file")
 end
 
 return peachy
