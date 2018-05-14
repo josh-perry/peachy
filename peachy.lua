@@ -44,6 +44,11 @@ peachy.__index = peachy
 -- If no initial tag is set then the object will be paused with no tag,
 -- the animation will start playing immediately.
 --
+-- @usage
+-- -- Load the image ourselves and set animation tag to "Spin".
+-- -- Will start playing immediately.
+-- spinner = peachy.new("spinner.json", love.graphics.newImage("spinner.png"), "Spin")
+--
 -- @tparam string dataFile a path to an Aseprite JSON file.
 -- @tparam Image imageData a LÖVE image  to animate.
 -- @tparam string initialTag the name of the animation tag to use initially.
