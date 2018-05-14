@@ -61,7 +61,7 @@ function peachy.new(dataFile, imageData, initialTag)
 
   self:_checkImageSize()
 
-  self:_initializeQuads()
+  self:_initializeFrames()
   self:_initializeTags()
 
   self.paused = true
@@ -200,10 +200,12 @@ function peachy:_pingpongBounce()
   end
 end
 
---- Internal: loads all of the frame quads
+--- Internal: loads all of the frames
+--
+-- Loads quads and frame duration data from the JSON.
 --
 -- Called from peachy.new
-function peachy:_initializeQuads()
+function peachy:_initializeFrames()
   assert(self._jsonData ~= nil, "No JSON data!")
   assert(self._jsonData.meta ~= nil, "No metadata in JSON!")
   assert(self._jsonData.frames ~= nil, "No frame data in JSON!")
