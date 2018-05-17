@@ -11,6 +11,7 @@ local man = require("examples/man")
 local blip
 
 function love.load()
+  love.window.setTitle("Peachy example - 🍑")
   spriteSheet = love.graphics.newImage("examples/countAndColours.png")
 
   count = peachy.new("examples/countAndColours.json", spriteSheet, "Numbers")
