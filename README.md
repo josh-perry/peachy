@@ -25,7 +25,9 @@ end
 If you don't specify an image to load in new by passing nil or false as the second argument, then peachy will attempt to load the image specified in the data file. This can cause problems: see limitations below.
 
 # Examples
-See main.lua for further examples.
+See main.lua for further examples:
+
+![Peachy example](docs/img/peachy_example.gif)
 
 # Documentation
 [Documentation is hosted on GitHub pages](https://josh-perry.github.io/peachy/) from the `docs` folder in this repository.
