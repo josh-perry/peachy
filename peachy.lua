@@ -108,6 +108,26 @@ function peachy:setTag(tag)
   self:nextFrame()
 end
 
+--- Jump to a particular frame index (1-based indexes) in the current animation.
+--
+-- Errors if the frame is outside the tag's frame range.
+--
+-- @usage
+-- -- Go to the 4th frame
+-- sound:setFrame(4)
+--
+-- @tparam number frame the frame index to jump to.
+function peachy:setFrame(frame)
+  if frame < 1 or frame > #self.tag.frames then
+    error("Frame "..frame.." is out of range of tag '"..self.tagName.."' (1.."..#self.tag.frames..")")
+  end
+
+  self.frameIndex = frame
+
+  self.frame = self.tag.frames[self.frameIndex]
+  self.frameTimer = cron.after(self.frame.duration, self.nextFrame, self)
+end
+
 --- Draw the animation's current frame in a specified location.
 -- @tparam number x the x position.
 -- @tparam number y the y position.
