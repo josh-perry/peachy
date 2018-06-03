@@ -209,9 +209,19 @@ function peachy:togglePlay()
   end
 end
 
---- Provides information about frame size
+--- Provides information about frame viewport
 function peachy:getViewport()
-  return self.frame.quad:getViewport()
+    return self.frame.quad:getViewport()
+end
+
+--- Provides width stored in the metadata of a current frame
+function peachy:getWidth()
+    return self._jsonData.frames[self.frameIndex].frame.w
+end
+
+--- Provides height stored in the metadata of a current frame
+function peachy:getHeight()
+    return self._jsonData.frames[self.frameIndex].frame.h
 end
 
 --- Internal: handles the ping-pong animation type.
