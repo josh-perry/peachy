@@ -209,6 +209,11 @@ function peachy:togglePlay()
   end
 end
 
+--- Provides information about frame size
+function peachy:getViewport()
+  return self.frame.quad:getViewport()
+end
+
 --- Internal: handles the ping-pong animation type.
 --
 -- Should only be called when we actually want to bounce.
