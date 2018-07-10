@@ -20,6 +20,10 @@ function love.load()
   countPingPong = peachy.new("examples/countAndColours.json", spriteSheet, "PingPong")
 
   spinner = peachy.new("examples/spinner.json", love.graphics.newImage("examples/spinner.png"), "Spin")
+  spinner:onLoop(function(a,b,c)
+  	print("I'm spinning!")
+  	print(("My arguments:%i %i %i"):format(a,b,c))
+  end, 1,2,3)
 
   sound = peachy.new("examples/sound.json", love.graphics.newImage("examples/sound.png"), "Bounce")
   blip = love.audio.newSource("examples/blip.wav", "static")

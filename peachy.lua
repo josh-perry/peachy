@@ -131,12 +131,12 @@ end
 --- Draw the animation's current frame in a specified location.
 -- @tparam number x the x position.
 -- @tparam number y the y position.
-function peachy:draw(x, y)
+function peachy:draw(x, y, rot, sx, sy)
   if not self.frame then
     return
   end
 
-  love.graphics.draw(self.image, self.frame.quad, x, y)
+  love.graphics.draw(self.image, self.frame.quad, x, y, rot or 0, sx or 1, sy or 1)
 end
 
 --- Update the animation.
@@ -188,6 +188,10 @@ function peachy:nextFrame()
   self.frame = self.tag.frames[self.frameIndex]
 
   self.frameTimer = cron.after(self.frame.duration, self.nextFrame, self)
+
+  if self.frameIndex == #self.tag.frames then
+		if self.callback_onLoop then self.callback_onLoop(unpack(self.args_onLoop)) end
+  end
 end
 
 --- Pauses the animation.
@@ -198,6 +202,19 @@ end
 --- Unpauses the animation.
 function peachy:play()
   self.paused = false
+end
+
+-- Stops the animation (pause it then return to first frame or last if specified)
+function peachy:stop(onLast)
+	local index = 1
+	self.paused = true
+	if onLast then index = #self.tag.frames end
+	self:setFrame(index)
+end
+
+function peachy:onLoop(fn, ...)
+	self.callback_onLoop = fn
+	self.args_onLoop = {...}
 end
 
 --- Toggle between playing/paused.
