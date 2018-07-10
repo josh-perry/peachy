@@ -131,6 +131,9 @@ end
 --- Draw the animation's current frame in a specified location.
 -- @tparam number x the x position.
 -- @tparam number y the y position.
+-- @tparam number rot the rotation to draw at.
+-- @tparam number sx the x scaling.
+-- @tparam number sy the y scaling.
 function peachy:draw(x, y, rot, sx, sy)
   if not self.frame then
     return
