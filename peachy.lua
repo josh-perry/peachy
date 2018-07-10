@@ -176,11 +176,13 @@ function peachy:nextFrame()
     else
       self.frameIndex = 1
     end
+    self:call_onLoop()
   elseif not forward and self.frameIndex < 1 then
     if self.tag.direction == "pingpong" then
       self:_pingpongBounce()
     else
       self.frameIndex = #self.tag.frames
+      self:call_onLoop()
     end
   end
 
@@ -188,10 +190,11 @@ function peachy:nextFrame()
   self.frame = self.tag.frames[self.frameIndex]
 
   self.frameTimer = cron.after(self.frame.duration, self.nextFrame, self)
+end
 
-  if self.frameIndex == #self.tag.frames then
-		if self.callback_onLoop then self.callback_onLoop(unpack(self.args_onLoop)) end
-  end
+--- Check for callbacks
+function peachy:call_onLoop()
+  if self.callback_onLoop then self.callback_onLoop(unpack(self.args_onLoop)) end
 end
 
 --- Pauses the animation.
@@ -204,17 +207,18 @@ function peachy:play()
   self.paused = false
 end
 
--- Stops the animation (pause it then return to first frame or last if specified)
+--- Stops the animation (pause it then return to first frame or last if specified)
 function peachy:stop(onLast)
-	local index = 1
-	self.paused = true
-	if onLast then index = #self.tag.frames end
-	self:setFrame(index)
+  local index = 1
+  self.paused = true
+  if onLast then index = #self.tag.frames end
+  self:setFrame(index)
 end
 
+--- Adds a callback function that will be called when the animation loops
 function peachy:onLoop(fn, ...)
-	self.callback_onLoop = fn
-	self.args_onLoop = {...}
+  self.callback_onLoop = fn
+  self.args_onLoop = {...}
 end
 
 --- Toggle between playing/paused.
