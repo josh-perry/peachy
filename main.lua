@@ -18,8 +18,10 @@ function love.load()
   colours = peachy.new("examples/countAndColours.json", spriteSheet, "Colours")
   countReverse = peachy.new("examples/countAndColours.json", spriteSheet, "NumbersDown")
   countPingPong = peachy.new("examples/countAndColours.json", spriteSheet, "PingPong")
-
   spinner = peachy.new("examples/spinner.json", love.graphics.newImage("examples/spinner.png"), "Spin")
+
+  countPingPong:onLoop(function() print("Hey I'm in pingpong mode!") end)
+  countReverse:onLoop(function() print("Hey I'm in reverse mode!") end)
   spinner:onLoop(function(a,b,c)
   	print("I'm spinning!")
   	print(("My arguments:%i %i %i"):format(a,b,c))
