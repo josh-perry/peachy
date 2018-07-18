@@ -41,8 +41,7 @@ peachy.__index = peachy
 -- If imageData isn't specified then Peachy will attempt to load it using the
 -- filename from the JSON data.
 --
--- If no initial tag is set then the object will be paused with no tag,
--- the animation will start playing immediately.
+-- If no initial tag is set then the object will be paused with no tag.
 --
 -- @usage
 -- -- Load the image ourselves and set animation tag to "Spin".
@@ -131,7 +130,10 @@ end
 --- Draw the animation's current frame in a specified location.
 -- @tparam number x the x position.
 -- @tparam number y the y position.
-function peachy:draw(x, y, rot, sx, sy, ox, oy)
+-- @tparam number rot the rotation to draw at.
+-- @tparam number sx the x scaling.
+-- @tparam number sy the y scaling.
+function peachy:draw(x, y, rot, sx, sy)
   if not self.frame then
     return
   end
