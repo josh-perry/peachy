@@ -131,12 +131,12 @@ end
 --- Draw the animation's current frame in a specified location.
 -- @tparam number x the x position.
 -- @tparam number y the y position.
-function peachy:draw(x, y, rot, sx, sy)
+function peachy:draw(x, y, rot, sx, sy, ox, oy)
   if not self.frame then
     return
   end
 
-  love.graphics.draw(self.image, self.frame.quad, x, y, rot or 0, sx or 1, sy or 1)
+  love.graphics.draw(self.image, self.frame.quad, x, y, rot or 0, sx or 1, sy or 1, ox or 0, oy or 0)
 end
 
 --- Update the animation.
