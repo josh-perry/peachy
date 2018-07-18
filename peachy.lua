@@ -41,8 +41,7 @@ peachy.__index = peachy
 -- If imageData isn't specified then Peachy will attempt to load it using the
 -- filename from the JSON data.
 --
--- If no initial tag is set then the object will be paused with no tag,
--- the animation will start playing immediately.
+-- If no initial tag is set then the object will be paused with no tag.
 --
 -- @usage
 -- -- Load the image ourselves and set animation tag to "Spin".
