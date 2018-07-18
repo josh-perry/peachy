@@ -133,7 +133,9 @@ end
 -- @tparam number rot the rotation to draw at.
 -- @tparam number sx the x scaling.
 -- @tparam number sy the y scaling.
-function peachy:draw(x, y, rot, sx, sy)
+-- @tparam number ox the origin offset x.
+-- @tparam number oy the origin offset y.
+function peachy:draw(x, y, rot, sx, sy, ox, oy)
   if not self.frame then
     return
   end
