@@ -37,28 +37,35 @@ local cron = require(PATH.."/lib/cron")
 peachy.__index = peachy
 
 --- Creates a new Peachy animation object.
---
--- If imageData isn't specified then Peachy will attempt to load it using the
--- filename from the JSON data.
---
--- If no initial tag is set then the object will be paused with no tag.
---
--- @usage
--- -- Load the image ourselves and set animation tag to "Spin".
--- -- Will start playing immediately.
--- spinner = peachy.new("spinner.json", love.graphics.newImage("spinner.png"), "Spin")
---
--- @tparam string dataFile a path to an Aseprite JSON file.
--- @tparam Image imageData a LÖVE image  to animate.
--- @tparam string initialTag the name of the animation tag to use initially.
--- @return the new Peachy object.
-function peachy.new(dataFile, imageData, initialTag)
-  assert(dataFile ~= nil, "No JSON data!")
-
-  local self = setmetatable({}, peachy)
-
-  -- Read the data
-  self._jsonData = json.decode(love.filesystem.read(dataFile))
+  --
+  -- If imageData isn't specified then Peachy will attempt to load it using the
+  -- filename from the JSON data.
+  --
+  -- If no initial tag is set then the object will be paused (i.e. not displayed) with no tag.
+  -- The animation will start playing immediately once created.
+  --
+  -- @usage
+  -- -- Load the image ourselves and set animation tag to "Spin".
+  -- -- Will start playing immediately.
+  -- spinner = peachy.new("spinner.json", love.graphics.newImage("spinner.png"), "Spin")
+  --
+  -- @tparam string dataFile a path to an Aseprite JSON file. It is also possible to pass a predecoded table,
+  -- which is useful for performance when creating large amounts of the same animation.
+  -- @tparam Image imageData a LÖVE image  to animate.
+  -- @tparam string initialTag the name of the animation tag to use initially.
+  -- @return the new Peachy object.
+  function peachy.new(dataFile, imageData, initialTag)
+    assert(dataFile ~= nil, "No JSON data!")
+  
+    local self = setmetatable({}, peachy)
+    
+    -- check if datafile is a lua table (i.e. pre decoded)
+    if type(dataFile) == 'table' then
+      self._jsonData = dataFile
+    else
+      -- Read the data
+      self._jsonData = json.decode(love.filesystem.read(dataFile))
+    end
 
   -- Load the image
   self.image = imageData or love.graphics.newImage(self._jsonData.meta.image)
