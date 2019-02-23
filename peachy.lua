@@ -56,9 +56,12 @@ peachy.__index = peachy
   -- @return the new Peachy object.
   function peachy.new(dataFile, imageData, initialTag)
     assert(dataFile ~= nil, "No JSON data!")
-  
+
     local self = setmetatable({}, peachy)
-    
+
+		--store the path to the passed json file
+    self.json_path = dataFile
+
     -- check if datafile is a lua table (i.e. pre decoded)
     if type(dataFile) == 'table' then
       self._jsonData = dataFile
@@ -132,6 +135,24 @@ function peachy:setFrame(frame)
 
   self.frame = self.tag.frames[self.frameIndex]
   self.frameTimer = cron.after(self.frame.duration, self.nextFrame, self)
+end
+
+--- Get the current frame of the current animation
+-- @usage
+-- Get the 2nd frame
+-- local f = sound:getFrame()
+--
+function peachy:getFrame()
+	return self.frameIndex
+end
+
+--- Get the json path passed in the object
+-- @usage
+-- Get the (string) JSON path
+-- local str_json = obj:getJSON()
+--
+function peachy:getJSON()
+	return self.json_path
 end
 
 --- Draw the animation's current frame in a specified location.
@@ -249,6 +270,11 @@ end
 --- Provides height stored in the metadata of a current frame
 function peachy:getHeight()
     return self._jsonData.frames[self.frameIndex].frame.h
+end
+
+--- Provides dimensions stored in the metadata of a current frame
+function peachy:getDimensions()
+	return self:getWidth(), self:getHeight()
 end
 
 --- Internal: handles the ping-pong animation type.
