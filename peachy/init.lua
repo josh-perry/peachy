@@ -30,9 +30,9 @@ local peachy = {
   ]]
 }
 
-local PATH = select('1', ...):match(".+%.") or ""
-local json = require(PATH.."/lib/json")
-local cron = require(PATH.."/lib/cron")
+local PATH = (...):gsub("%.[^%.]+$", "")
+local json = require(PATH..".lib.json")
+local cron = require(PATH..".lib.cron")
 
 peachy.__index = peachy
 

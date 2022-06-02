@@ -38,7 +38,7 @@ They're written in [LDoc](https://github.com/stevedonovan/LDoc/) in [peachy.lua]
 If you want to build the documentation yourself for whatever reason then:
 
 * install [LDoc](https://github.com/stevedonovan/LDoc/)
-* Run `ldoc.lua peachy.lua -d docs`
+* Run `ldoc.lua lib/init.lua -d docs`
 
 This will build them into the docs directory.
 
