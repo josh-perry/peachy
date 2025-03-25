@@ -31,8 +31,8 @@ local peachy = {
 }
 
 local PATH = (...):gsub("%.[^%.]+$", "")
-local json = require(PATH..".lib.json")
-local cron = require(PATH..".lib.cron")
+local json = require(PATH..".peachy.lib.json")
+local cron = require(PATH..".peachy.lib.cron")
 
 peachy.__index = peachy
 
@@ -54,6 +54,11 @@ peachy.__index = peachy
   -- @tparam Image imageData a LÖVE image  to animate.
   -- @tparam string initialTag the name of the animation tag to use initially.
   -- @return the new Peachy object.
+
+  function peachy:hasTag(tag)
+    return self.frameTags[tag] ~= nil
+end
+
   function peachy.new(dataFile, imageData, initialTag)
     assert(dataFile ~= nil, "No JSON data!")
 
@@ -107,14 +112,18 @@ function peachy:setTag(tag)
 
   self.tagName = tag
   self.tag = self.frameTags[self.tagName]
-  self.frameIndex = nil
   self.direction = self.tag.direction
 
   if self.direction == "pingpong" then
     self.direction = "forward"
   end
 
-  self:nextFrame()
+  -- 初始化为首帧
+  self.frameIndex = 1
+  self:setFrame(1)
+
+  -- 恢复播放状态
+  self.paused = false
 end
 
 --- Jump to a particular frame index (1-based indexes) in the current animation.
@@ -132,9 +141,15 @@ function peachy:setFrame(frame)
   end
 
   self.frameIndex = frame
-
   self.frame = self.tag.frames[self.frameIndex]
-  self.frameTimer = cron.after(self.frame.duration, self.nextFrame, self)
+
+  -- 处理 65535 特殊帧
+  if self.frame.duration == 65535 then
+    self.frameTimer = nil     -- 清除定时器
+    self.paused = true        -- 自动暂停
+  else
+    self.frameTimer = cron.after(self.frame.duration, self.nextFrame, self)
+  end
 end
 
 --- Get the current frame of the current animation
@@ -176,16 +191,16 @@ end
 function peachy:update(dt)
   assert(dt, "No dt passed into update!")
 
-  if self.paused then
+  -- 无定时器或暂停时跳过
+  if self.paused or not self.frameTimer then
     return
   end
 
-  -- If we're trying to play an animation and it's nil or hasn't been set up
-  -- properly then error
+  -- 原有断言保持不变
   assert(self.tag, "No animation tag has been set!")
   assert(self.frameTimer, "Frame timer hasn't been initialized!")
 
-  -- Update timer in milliseconds since that's how Aseprite stores durations
+  -- 更新定时器（毫秒单位）
   self.frameTimer:update(dt * 1000)
 end
 
@@ -221,7 +236,13 @@ function peachy:nextFrame()
   -- Get next frame
   self.frame = self.tag.frames[self.frameIndex]
 
-  self.frameTimer = cron.after(self.frame.duration, self.nextFrame, self)
+  -- 处理 65535 特殊帧
+  if self.frame.duration == 65535 then
+    self.frameTimer = nil     -- 清除定时器
+    self.paused = true        -- 自动暂停
+  else
+    self.frameTimer = cron.after(self.frame.duration, self.nextFrame, self)
+  end
 end
 
 --- Check for callbacks
