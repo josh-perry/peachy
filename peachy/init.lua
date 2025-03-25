@@ -31,8 +31,8 @@ local peachy = {
 }
 
 local PATH = (...):gsub("%.[^%.]+$", "")
-local json = require(PATH..".peachy.lib.json")
-local cron = require(PATH..".peachy.lib.cron")
+local json = require(PATH..".lib.json")
+local cron = require(PATH..".lib.cron")
 
 peachy.__index = peachy
 
