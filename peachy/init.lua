@@ -30,7 +30,7 @@ local peachy = {
 	]]
 }
 
-local PATH = (...):gsub("%.[^%.]+$", "")
+local PATH = ...
 local json = require(PATH .. ".lib.json")
 
 peachy.__index = peachy
