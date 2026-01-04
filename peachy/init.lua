@@ -1,11 +1,24 @@
 --- A parser/renderer for Aseprite animations in LÖVE.
--- @classmod peachy
-
+---@class peachy
+---@field image love.Image
+---@field frames table[]
+---@field frameTags table<string, table>
+---@field paused boolean
+---@field tag table?
+---@field tagName string?
+---@field direction string?
+---@field frameIndex integer?
+---@field frame table?
+---@field frameTimeAccumulator number
+---@field jsonPath string|table
+---@field private __jsonData table
+---@field private __callbackOnLoop function?
+---@field private __argsOnLoop table?
 local peachy = {
-	_VERSION = "1.0.0-alpha",
-	_DESCRIPTION = "A parser/renderer for Aseprite animations in LÖVE.",
-	_URL = "https://github.com/josh-perry/peachy",
-	_LICENSE = [[
+	__VERSION = "1.0.0-alpha",
+	__DESCRIPTION = "A parser/renderer for Aseprite animations in LÖVE.",
+	__URL = "https://github.com/josh-perry/peachy",
+	__LICENSE = [[
 		MIT License
 
 		Copyright (c) 2018 Josh Perry
@@ -36,44 +49,42 @@ local json = require(PATH .. ".lib.json")
 peachy.__index = peachy
 
 --- Creates a new Peachy animation object.
---
--- If imageData isn't specified then Peachy will attempt to load it using the
--- filename from the JSON data.
---
--- If no initial tag is set then the object will be paused (i.e. not displayed) with no tag.
--- The animation will start playing immediately once created.
---
--- @usage
--- -- Load the image ourselves and set animation tag to "Spin".
--- -- Will start playing immediately.
--- spinner = peachy.new("spinner.json", love.graphics.newImage("spinner.png"), "Spin")
---
--- @tparam string dataFile a path to an Aseprite JSON file. It is also possible to pass a predecoded table,
--- which is useful for performance when creating large amounts of the same animation.
--- @tparam Image imageData a LÖVE image  to animate.
--- @tparam string initialTag the name of the animation tag to use initially.
--- @return the new Peachy object.
-function peachy.new(dataFile, imageData, initialTag)
-	assert(dataFile ~= nil, "No JSON data!")
+---
+--- If imageData isn't specified then Peachy will attempt to load it using the
+--- filename from the JSON data.
+---
+--- If no initial tag is set then the object will be paused (i.e. not displayed) with no tag.
+--- The animation will start playing immediately once created.
+---
+--- Example:
+--- ```lua
+--- -- Load the image ourselves and set animation tag to "Spin".
+--- -- Will start playing immediately.
+--- spinner = peachy.new("spinner.json", love.graphics.newImage("spinner.png"), "Spin")
+--- ```
+---@param data string|table Path to an Aseprite JSON file or a predecoded table
+---@param image love.Image? A LÖVE image
+---@param initialTag string? The name of the animation tag to use initially
+---@return peachy
+function peachy.new(data, image, initialTag)
+	assert(data ~= nil, "No JSON data!")
 
 	local self = setmetatable({}, peachy)
 
-	--store the path to the passed json file
-	self.json_path = dataFile
-
-	-- check if datafile is a lua table (i.e. pre decoded)
-	if type(dataFile) == 'table' then
-		self._jsonData = dataFile
+	-- Check if datafile is a lua table (i.e. pre decoded)
+	if type(data) == 'table' then
+		self.__jsonData = data
 	else
 		-- Read the data
-		self._jsonData = json.decode(love.filesystem.read(dataFile))
+		self.__jsonData = json.decode(love.filesystem.read(data))
+		self.jsonPath = data
 	end
 
 	-- Load the image
-	self.image = imageData or love.graphics.newImage(self._jsonData.meta.image)
+	self.image = image or love.graphics.newImage(self.__jsonData.meta.image)
 
-	self:_initializeFrames()
-	self:_initializeTags()
+	self:__initializeFrames()
+	self:__initializeTags()
 
 	self.paused = true
 
@@ -91,10 +102,9 @@ function peachy.new(dataFile, imageData, initialTag)
 end
 
 --- Switch to a different animation tag.
--- In the case that we're attempting to switch to the animation currently playing,
--- nothing will happen.
---
--- @tparam string tag the animation tag name to switch to.
+--- In the case that we're attempting to switch to the animation currently playing,
+--- nothing will happen.
+---@param tag string The tag name to switch to
 function peachy:setTag(tag)
 	assert(tag, "No animation tag specified!")
 	assert(self.frameTags[tag], "Tag " .. tag .. " not found in frametags!")
@@ -116,14 +126,15 @@ function peachy:setTag(tag)
 end
 
 --- Jump to a particular frame index (1-based indexes) in the current animation.
---
--- Errors if the frame is outside the tag's frame range.
---
--- @usage
--- -- Go to the 4th frame
--- sound:setFrame(4)
---
--- @tparam number frame the frame index to jump to.
+---
+--- Errors if the frame is outside the tag's frame range.
+---
+--- Example:
+--- ```lua
+--- -- Go to the 4th frame
+--- sound:setFrame(4)
+--- ```
+---@param frame integer The frame index to jump to
 function peachy:setFrame(frame)
 	if frame < 1 or frame > #self.tag.frames then
 		error(("Frame %d is out of range of tag '%s' (1..%d)"):format(frame, self.tagName, #self.tag.frames))
@@ -136,31 +147,31 @@ function peachy:setFrame(frame)
 end
 
 --- Get the current frame of the current animation
--- @usage
--- Get the 2nd frame
--- local f = sound:getFrame()
---
+---@return integer?
 function peachy:getFrame()
 	return self.frameIndex
 end
 
+--- Get the current tag's name
+---@return string?
+function peachy:getTag()
+	return self.tagName
+end
+
 --- Get the json path passed in the object
--- @usage
--- Get the (string) JSON path
--- local str_json = obj:getJSON()
---
+---@return string|table
 function peachy:getJSON()
-	return self.json_path
+	return self.jsonPath
 end
 
 --- Draw the animation's current frame in a specified location.
--- @tparam number x the x position.
--- @tparam number y the y position.
--- @tparam number rot the rotation to draw at.
--- @tparam number sx the x scaling.
--- @tparam number sy the y scaling.
--- @tparam number ox the origin offset x.
--- @tparam number oy the origin offset y.
+---@param x number The x position
+---@param y number The y position
+---@param rot number? The rotation to draw at
+---@param sx number? The x scaling
+---@param sy number? The y scaling
+---@param ox number? The origin offset x
+---@param oy number? The origin offset y
 function peachy:draw(x, y, rot, sx, sy, ox, oy)
 	if not self.frame then
 		return
@@ -170,16 +181,13 @@ function peachy:draw(x, y, rot, sx, sy, ox, oy)
 end
 
 --- Update the animation.
--- @tparam number dt frame delta. Should be called from love.update and given the dt.
+---@param dt number Frame delta in seconds. Should be called from love.update
 function peachy:update(dt)
-	assert(dt, "No dt passed into update!")
-
 	if self.paused then
 		return
 	end
 
-	-- If we're trying to play an animation and it's nil or hasn't been set up
-	-- properly then error
+	assert(dt, "No dt passed into update!")
 	assert(self.tag, "No animation tag has been set!")
 	assert(self.frameTimeAccumulator, "Frame time accumulator hasn't been initialized!")
 
@@ -193,8 +201,8 @@ function peachy:update(dt)
 end
 
 --- Move to the next frame.
--- Internal: unless you want to skip frames, this generally will not ever
--- need to be called manually.
+--- Unless you want to skip frames, this generally will not ever
+--- need to be called manually.
 function peachy:nextFrame()
 	local forward = self.direction == "forward"
 
@@ -207,27 +215,28 @@ function peachy:nextFrame()
 	-- Looping
 	if forward and self.frameIndex > #self.tag.frames then
 		if self.tag.direction == "pingpong" then
-			self:_pingpongBounce()
+			self:__pingpongBounce()
 		else
 			self.frameIndex = 1
 		end
-		self:call_onLoop()
+
+		self:__callOnLoop()
 	elseif not forward and self.frameIndex < 1 then
 		if self.tag.direction == "pingpong" then
-			self:_pingpongBounce()
+			self:__pingpongBounce()
 		else
 			self.frameIndex = #self.tag.frames
-			self:call_onLoop()
+			self:__callOnLoop()
 		end
 	end
 
-	-- Get next frame
 	self.frame = self.tag.frames[self.frameIndex]
 end
 
 --- Check for callbacks
-function peachy:call_onLoop()
-	if self.callback_onLoop then self.callback_onLoop(unpack(self.args_onLoop)) end
+---@package
+function peachy:__callOnLoop()
+	if self.__callbackOnLoop then self.__callbackOnLoop(unpack(self.__argsOnLoop)) end
 end
 
 --- Pauses the animation.
@@ -241,6 +250,7 @@ function peachy:play()
 end
 
 --- Stops the animation (pause it then return to first frame or last if specified)
+---@param onLast boolean? If true, stop on last frame instead of first
 function peachy:stop(onLast)
 	local index = 1
 	self.paused = true
@@ -249,9 +259,11 @@ function peachy:stop(onLast)
 end
 
 --- Adds a callback function that will be called when the animation loops
+---@param fn function The callback function to call on loop
+---@param ... any Additional arguments to pass to the callback
 function peachy:onLoop(fn, ...)
-	self.callback_onLoop = fn
-	self.args_onLoop = { ... }
+	self.__callbackOnLoop = fn
+	self.__argsOnLoop = { ... }
 end
 
 --- Toggle between playing/paused.
@@ -264,25 +276,29 @@ function peachy:togglePlay()
 end
 
 --- Provides width stored in the metadata of a current frame
+---@return number
 function peachy:getWidth()
-	return self._jsonData.frames[self.frameIndex].frame.w
+	return self.__jsonData.frames[self.frameIndex].frame.w
 end
 
 --- Provides height stored in the metadata of a current frame
+---@return number
 function peachy:getHeight()
-	return self._jsonData.frames[self.frameIndex].frame.h
+	return self.__jsonData.frames[self.frameIndex].frame.h
 end
 
 --- Provides dimensions stored in the metadata of a current frame
+---@return number width
+---@return number height
 function peachy:getDimensions()
 	return self:getWidth(), self:getHeight()
 end
 
---- Internal: handles the ping-pong animation type.
---
--- Should only be called when we actually want to bounce.
--- Swaps the direction.
-function peachy:_pingpongBounce()
+--- Handles the ping-pong animation type.
+--- Should only be called when we actually want to bounce.
+--- Swaps the direction.
+---@private
+function peachy:__pingpongBounce()
 	-- We need to increment/decrement frame index by 2 because
 	-- at this point we've already gone to the next frame
 	if self.direction == "forward" then
@@ -294,19 +310,16 @@ function peachy:_pingpongBounce()
 	end
 end
 
---- Internal: loads all of the frames
---
--- Loads quads and frame duration data from the JSON.
---
--- Called from peachy.new
-function peachy:_initializeFrames()
-	assert(self._jsonData ~= nil, "No JSON data!")
-	assert(self._jsonData.meta ~= nil, "No metadata in JSON!")
-	assert(self._jsonData.frames ~= nil, "No frame data in JSON!")
+--- Loads quads and frame duration data from the JSON.
+---@private
+function peachy:__initializeFrames()
+	assert(self.__jsonData ~= nil, "No JSON data!")
+	assert(self.__jsonData.meta ~= nil, "No metadata in JSON!")
+	assert(self.__jsonData.frames ~= nil, "No frame data in JSON!")
 
 	-- Initialize all the quads
 	self.frames = {}
-	for _, frameData in ipairs(self._jsonData.frames) do
+	for _, frameData in ipairs(self.__jsonData.frames) do
 		local frame = {}
 
 		local fd = frameData.frame
@@ -317,17 +330,16 @@ function peachy:_initializeFrames()
 	end
 end
 
---- Internal: loads all of the animation tags
---
--- Called from peachy.new
-function peachy:_initializeTags()
-	assert(self._jsonData ~= nil, "No JSON data!")
-	assert(self._jsonData.meta ~= nil, "No metadata in JSON!")
-	assert(self._jsonData.meta.frameTags ~= nil, "No frame tags in JSON! Make sure you exported them in Aseprite!")
+--- Loads all of the animation tags
+---@private
+function peachy:__initializeTags()
+	assert(self.__jsonData ~= nil, "No JSON data!")
+	assert(self.__jsonData.meta ~= nil, "No metadata in JSON!")
+	assert(self.__jsonData.meta.frameTags ~= nil, "No frame tags in JSON! Make sure you exported them in Aseprite!")
 
 	self.frameTags = {}
 
-	for _, frameTag in ipairs(self._jsonData.meta.frameTags) do
+	for _, frameTag in ipairs(self.__jsonData.meta.frameTags) do
 		local ft = {}
 		ft.direction = frameTag.direction
 		ft.frames = {}

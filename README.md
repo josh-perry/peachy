@@ -22,25 +22,71 @@ function love.update(dt)
 end
 ```
 
-If you don't specify an image to load in new by passing nil or false as the second argument, then peachy will attempt to load the image specified in the data file. This can cause problems: see limitations below.
+If you don't specify an image to load in new by passing nil or false as the second argument, then peachy will attempt to load the image specified in the data file. This can cause problems: see [limitations below](#limitations).
 
 # Examples
 See main.lua for further examples:
 
 ![Peachy example](docs/img/peachy_example.gif)
 
-# Documentation
-[Documentation is hosted on GitHub pages](https://josh-perry.github.io/peachy/) from the `docs` folder in this repository.
+# API Reference
+## Constructor
+### peachy.new(data: string|table, image?: Image, initialTag?: string) -> peachy
+Creates a new animation object.
 
-They're written in [LDoc](https://github.com/stevedonovan/LDoc/) in [peachy.lua](peachy.lua) if you want to make a change to them.
+## Functions
+### animation:play()
+Resumes the animation.
 
-## Building
-If you want to build the documentation yourself for whatever reason then:
+### animation:pause()
+Pauses the animation.
 
-* install [LDoc](https://github.com/stevedonovan/LDoc/)
-* Run `ldoc.lua lib/init.lua -d docs`
+### animation:stop(onLast?: boolean)
+Stops the animation and returns to first (or last) frame.
 
-This will build them into the docs directory.
+### animation:togglePlay()
+Toggles between playing and paused.
+
+### animation:setTag(tag: string)
+Switches to a different animation tag.
+
+### animation:setFrame(frame: integer)
+Jumps to a specific frame index (1-based).
+
+### animation:getTag() -> string?
+Returns the current tag name.
+
+### animation:getFrame() -> integer?
+Returns the current frame index.
+
+### animation:draw(x: number, y: number, rot?: number, sx?: number, sy?: number, ox?: number, oy?: number)
+Draws the current frame.
+
+### animation:update(dt: number)
+Updates the animation timer.
+
+### animation:getWidth() -> number
+Returns the width of the current frame.
+
+### animation:getHeight() -> number
+Returns the height of the current frame.
+
+### animation:getDimensions() -> number, number
+Returns both width and height of the current frame.
+
+### animation:onLoop(callback: function, ...)
+Sets a callback function to be called when the animation loops.
+
+## Properties
+
+### animation.paused: boolean
+Boolean indicating if the animation is paused.
+
+### animation.frameIndex: integer
+Current frame index.
+
+### animation.tagName: string
+Current animation tag name.
 
 # Limitations
 * By default Aseprite will export a **non-relative** path as the image file. This is problematic because LÖVE will refuse to load it and it's non-portable. There's a workaround listed [here](https://github.com/aseprite/aseprite/issues/1606). Either specify the image yourself in `peachy.new`, edit the JSON manually or use the CLI.
