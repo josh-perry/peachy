@@ -6,7 +6,7 @@ local countReverse
 local countPingPong
 local spinner
 local spriteSheet
-local man = require("examples/man")
+local man = require("examples.man")
 
 local blip
 

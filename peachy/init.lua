@@ -32,7 +32,6 @@ local peachy = {
 
 local PATH = (...):gsub("%.[^%.]+$", "")
 local json = require(PATH..".lib.json")
-local cron = require(PATH..".lib.cron")
 
 peachy.__index = peachy
 
@@ -83,6 +82,7 @@ peachy.__index = peachy
   self.tag = nil
   self.tagName = nil
   self.direction = nil
+  self.frameTimeAccumulator = 0
 
   if initialTag then
     self:setTag(initialTag)
@@ -134,7 +134,7 @@ function peachy:setFrame(frame)
   self.frameIndex = frame
 
   self.frame = self.tag.frames[self.frameIndex]
-  self.frameTimer = cron.after(self.frame.duration, self.nextFrame, self)
+  self.frameTimeAccumulator = 0
 end
 
 --- Get the current frame of the current animation
@@ -183,10 +183,15 @@ function peachy:update(dt)
   -- If we're trying to play an animation and it's nil or hasn't been set up
   -- properly then error
   assert(self.tag, "No animation tag has been set!")
-  assert(self.frameTimer, "Frame timer hasn't been initialized!")
+  assert(self.frameTimeAccumulator, "Frame time accumulator hasn't been initialized!")
 
-  -- Update timer in milliseconds since that's how Aseprite stores durations
-  self.frameTimer:update(dt * 1000)
+  self.frameTimeAccumulator = self.frameTimeAccumulator + (dt * 1000)
+
+  -- Handle frame advancement, skipping frames if dt spike occurred
+  while self.frameTimeAccumulator >= self.frame.duration do
+    self.frameTimeAccumulator = self.frameTimeAccumulator - self.frame.duration
+    self:nextFrame()
+  end
 end
 
 --- Move to the next frame.
@@ -220,8 +225,6 @@ function peachy:nextFrame()
 
   -- Get next frame
   self.frame = self.tag.frames[self.frameIndex]
-
-  self.frameTimer = cron.after(self.frame.duration, self.nextFrame, self)
 end
 
 --- Check for callbacks
