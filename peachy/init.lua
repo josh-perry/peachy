@@ -72,8 +72,6 @@ function peachy.new(dataFile, imageData, initialTag)
 	-- Load the image
 	self.image = imageData or love.graphics.newImage(self._jsonData.meta.image)
 
-	self:_checkImageSize()
-
 	self:_initializeFrames()
 	self:_initializeTags()
 
@@ -312,7 +310,7 @@ function peachy:_initializeFrames()
 		local frame = {}
 
 		local fd = frameData.frame
-		frame.quad = love.graphics.newQuad(fd.x, fd.y, fd.w, fd.h, self._jsonData.meta.size.w, self._jsonData.meta.size.h)
+		frame.quad = love.graphics.newQuad(fd.x, fd.y, fd.w, fd.h, self.image)
 		frame.duration = frameData.duration
 
 		table.insert(self.frames, frame)
@@ -340,15 +338,6 @@ function peachy:_initializeTags()
 
 		self.frameTags[frameTag.name] = ft
 	end
-end
-
---- Internal: checks that the loaded image size matches the metadata
---
--- Called from peachy.new
-function peachy:_checkImageSize()
-	local imageWidth, imageHeight = self._jsonData.meta.size.w, self._jsonData.meta.size.h
-	assert(imageWidth == self.image:getWidth(), "Image width metadata doesn't match actual width of file")
-	assert(imageHeight == self.image:getHeight(), "Image height metadata doesn't match actual height of file")
 end
 
 return peachy
