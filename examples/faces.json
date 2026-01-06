@@ -1,0 +1,32 @@
+{ "frames": [
+   {
+    "filename": "faces.aseprite",
+    "frame": { "x": 0, "y": 0, "w": 992, "h": 32 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 992, "h": 32 },
+    "sourceSize": { "w": 992, "h": 32 },
+    "duration": 100
+   }
+ ],
+ "meta": {
+  "app": "http://www.aseprite.org/",
+  "version": "1.3.17-beta2-x64",
+  "image": "faces.png",
+  "format": "RGBA8888",
+  "size": { "w": 992, "h": 32 },
+  "scale": "1",
+  "frameTags": [
+  ],
+  "layers": [
+   { "name": "Borders", "opacity": 255, "blendMode": "normal" }
+  ],
+  "slices": [
+   { "name": "Skull", "color": "#fe5b59ff", "data": "ded", "keys": [{ "frame": 0, "bounds": {"x": 0, "y": 0, "w": 32, "h": 32 } }] },
+   { "name": "Smile", "color": "#f7a547ff", "data": "if you're happy and you know it", "keys": [{ "frame": 0, "bounds": {"x": 32, "y": 0, "w": 32, "h": 32 } }] },
+   { "name": "UpsideDown", "color": "#0000ffff", "keys": [{ "frame": 0, "bounds": {"x": 64, "y": 0, "w": 32, "h": 32 } }] },
+   { "name": "Heart", "color": "#d186dfff", "data": "<3", "keys": [{ "frame": 0, "bounds": {"x": 256, "y": 0, "w": 32, "h": 32 } }] },
+   { "name": "Nerd", "color": "#0000ffff", "data": "its keyslam", "keys": [{ "frame": 0, "bounds": {"x": 320, "y": 0, "w": 32, "h": 32 } }] }
+  ]
+ }
+}

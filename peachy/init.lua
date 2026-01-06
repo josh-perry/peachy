@@ -1,8 +1,16 @@
+--- A slice object representing a named rectangle in the image.
+---@class Slice
+---@field bounds {x: number, y: number, w: number, h: number} The bounding rectangle of the slice
+---@field quad love.Quad The quad used for rendering this slice
+---@field color number[]? Normalized RGBA colour values (0-1) (the border colour - at least in Aseprite)
+---@field data string? Custom user data
+
 --- A parser/renderer for Aseprite animations in LÖVE.
 ---@class peachy
 ---@field image love.Image
 ---@field frames table[]
 ---@field frameTags table<string, table>
+---@field slices table<string, Slice>
 ---@field paused boolean
 ---@field tag table?
 ---@field tagName string?
@@ -85,6 +93,7 @@ function peachy.new(data, image, initialTag)
 
 	self:__initializeFrames()
 	self:__initializeTags()
+	self:__initializeSlices()
 
 	self.paused = true
 
@@ -294,6 +303,47 @@ function peachy:getDimensions()
 	return self:getWidth(), self:getHeight()
 end
 
+--- Get a slice by name
+---@param name string The slice name
+---@return Slice? The slice object or nil if not found
+function peachy:getSlice(name)
+	assert(name, "No slice name specified!")
+	return self.slices[name]
+end
+
+--- Get all slice names
+---@return string[] Array of slice names
+function peachy:getSliceNames()
+	local names = {}
+	for name, _ in pairs(self.slices) do
+		table.insert(names, name)
+	end
+	return names
+end
+
+--- Check if a slice exists
+---@param name string The slice name
+---@return boolean
+function peachy:hasSlice(name)
+	return self.slices[name] ~= nil
+end
+
+--- Draw a slice at the specified position
+---@param name string The slice name
+---@param x number The x position
+---@param y number The y position
+---@param rot number? The rotation to draw at
+---@param sx number? The x scaling
+---@param sy number? The y scaling
+---@param ox number? The origin offset x
+---@param oy number? The origin offset y
+function peachy:drawSlice(name, x, y, rot, sx, sy, ox, oy)
+	local slice = self:getSlice(name)
+	assert(slice, ("Slice '%s' not found!"):format(name))
+
+	love.graphics.draw(self.image, slice.quad, x, y, rot or 0, sx or 1, sy or 1, ox or 0, oy or 0)
+end
+
 --- Handles the ping-pong animation type.
 --- Should only be called when we actually want to bounce.
 --- Swaps the direction.
@@ -349,6 +399,70 @@ function peachy:__initializeTags()
 		end
 
 		self.frameTags[frameTag.name] = ft
+	end
+end
+
+--- Converts a hex colour string (e.g. "#0000ffff") to a normalised RGBA table
+---@param hex string The hex colour string
+---@return number[]? Normalized RGBA values (0-1) as array {r, g, b, a} or nil if invalid
+---@private
+function peachy:__hexToColor(hex)
+	if not hex or type(hex) ~= "string" then
+		return nil
+	end
+
+	hex = hex:gsub("#", "")
+
+	if #hex == 8 then
+		local rb = tonumber(hex:sub(1, 2), 16)
+		local gb = tonumber(hex:sub(3, 4), 16)
+		local bb = tonumber(hex:sub(5, 6), 16)
+		local ab = tonumber(hex:sub(7, 8), 16)
+
+		if rb and gb and bb and ab then
+			local r, g, b, a = love.math.colorFromBytes(rb, gb, bb, ab)
+			return { r, g, b, a }
+		end
+	elseif #hex == 6 then
+		local rb = tonumber(hex:sub(1, 2), 16)
+		local gb = tonumber(hex:sub(3, 4), 16)
+		local bb = tonumber(hex:sub(5, 6), 16)
+
+		if rb and gb and bb then
+			local r, g, b, a = love.math.colorFromBytes(rb, gb, bb, 255)
+			return { r, g, b, a }
+		end
+	end
+
+	return nil
+end
+
+--- Loads all of the slices from the JSON
+---@private
+function peachy:__initializeSlices()
+	assert(self.__jsonData ~= nil, "No JSON data!")
+	assert(self.__jsonData.meta ~= nil, "No metadata in JSON!")
+
+	if not self.__jsonData.meta.slices then
+		self.slices = {}
+		return
+	end
+
+	self.slices = {}
+
+	for _, slice in ipairs(self.__jsonData.meta.slices) do
+		assert(slice.keys and #slice.keys > 0, "Slice '" .. slice.name .. "' has no keys!")
+		assert(slice.keys[1].bounds, "Slice '" .. slice.name .. "' first key has no bounds!")
+
+		local bounds = slice.keys[1].bounds
+		local s = {
+			bounds = { x = bounds.x, y = bounds.y, w = bounds.w, h = bounds.h },
+			quad = love.graphics.newQuad(bounds.x, bounds.y, bounds.w, bounds.h, self.image),
+			color = self:__hexToColor(slice.color),
+			data = slice.data
+		}
+
+		self.slices[slice.name] = s
 	end
 end
 

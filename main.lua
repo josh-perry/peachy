@@ -12,6 +12,9 @@ local countReverse = peachy.new("examples/countAndColours.json", spriteSheet, "N
 local countPingPong = peachy.new("examples/countAndColours.json", spriteSheet, "PingPong")
 local spinner = peachy.new("examples/spinner.json", love.graphics.newImage("examples/spinner.png"), "Spin")
 local sound = peachy.new("examples/sound.json", love.graphics.newImage("examples/sound.png"), "Bounce")
+local faces = peachy.new("examples/faces.json", love.graphics.newImage("examples/faces.png"))
+
+local currentFace = nil
 
 local blip = love.audio.newSource("examples/blip.wav", "static")
 blip:setVolume(0.3)
@@ -24,6 +27,8 @@ spinner:onLoop(function(a, b, c)
 end, 1, 2, 3)
 
 function love.draw()
+	love.graphics.setColor(1, 1, 1)
+
 	love.graphics.print("countAndColours.json", 15, 15)
 	love.graphics.print("Tag", 50, 50)
 	count:draw(50, 80)
@@ -51,6 +56,28 @@ function love.draw()
 	love.graphics.print("sound.json", 415, 215)
 	love.graphics.print("Press space to pause/play", 450, 250)
 	sound:draw(450, 280)
+
+	love.graphics.print("faces.json (slices)", 415, 415)
+	love.graphics.print("Press F for face", 450, 450)
+
+	if currentFace then
+		faces:drawSlice(currentFace, 450, 480)
+		love.graphics.print(currentFace, 450, 520)
+
+		local slice = faces:getSlice(currentFace)
+
+		if slice then
+			if slice.color then
+				love.graphics.setColor(slice.color)
+				love.graphics.rectangle("line", 450, 480, slice.bounds.w, slice.bounds.h)
+			end
+
+			if slice.data then
+				love.graphics.setColor(1, 1, 1)
+				love.graphics.print(("Slice data: %s"):format(slice.data), 450, 540)
+			end
+		end
+	end
 end
 
 function love.update(dt)
@@ -73,5 +100,10 @@ function love.keypressed(key)
 	if key == "space" then
 		spinner:togglePlay()
 		sound:togglePlay()
+	elseif key == "f" then
+		local sliceNames = faces:getSliceNames()
+		if #sliceNames > 0 then
+			currentFace = sliceNames[love.math.random(1, #sliceNames)]
+		end
 	end
 end
