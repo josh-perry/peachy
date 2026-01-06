@@ -74,6 +74,4 @@ A slice object representing a named rectangle in the image.
 
 # Limitations
 * By default Aseprite will export a **non-relative** path as the image file. This is problematic because LÖVE will refuse to load it and it's non-portable. There's a workaround listed [here](https://github.com/aseprite/aseprite/issues/1606). Either specify the image yourself in `peachy.new`, edit the JSON manually or use the CLI.
-* Exported sprite sheets **must** be exported as an array, **not** as a hash table.
-![Export as array](docs/img/export_type.png)
 * Slices don't animate. This is a limitation of Aseprite as far as I'm aware, slices are just regions on an image, not a frame cel. When the [new layer types](https://github.com/aseprite/aseprite/pull/5347) come in there will be tools better suited for drawing hitboxes etc.

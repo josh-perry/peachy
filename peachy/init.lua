@@ -360,12 +360,50 @@ function peachy:__pingpongBounce()
 	end
 end
 
+--- Sorts frames from hash format by index
+--- ---@param frames table[] The frames to sort
+--- ---@private
+function peachy:__sortHashFrames(frames)
+	table.sort(frames, function(a, b) return a.index < b.index end)
+end
+
+--- Converts hash format frames to array format
+---@private
+function peachy:__convertHashFramesToArray()
+	local framesArray = {}
+
+	for filename, frameData in pairs(self.__jsonData.frames) do
+		local frameIndex = tonumber(filename:match("(%d+)%.aseprite"))
+
+		if frameIndex then
+			frameData.filename = filename
+			table.insert(framesArray, { index = frameIndex, data = frameData })
+		end
+	end
+
+	self:__sortHashFrames(framesArray)
+
+	local normalisedFrames = {}
+	for _, entry in ipairs(framesArray) do
+		table.insert(normalisedFrames, entry.data)
+	end
+
+	self.__jsonData.frames = normalisedFrames
+end
+
 --- Loads quads and frame duration data from the JSON.
 ---@private
 function peachy:__initializeFrames()
 	assert(self.__jsonData ~= nil, "No JSON data!")
 	assert(self.__jsonData.meta ~= nil, "No metadata in JSON!")
 	assert(self.__jsonData.frames ~= nil, "No frame data in JSON!")
+
+	local isArrayStyleExport = self.__jsonData.frames[1] ~= nil
+
+	-- If hash format, normalise to array
+	if not isArrayStyleExport then
+		self:__convertHashFramesToArray()
+	end
 
 	-- Initialize all the quads
 	self.frames = {}

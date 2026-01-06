@@ -1,6 +1,5 @@
-{ "frames": [
-   {
-    "filename": "man 0.aseprite",
+{ "frames": {
+   "man 0.aseprite": {
     "frame": { "x": 0, "y": 0, "w": 16, "h": 24 },
     "rotated": false,
     "trimmed": false,
@@ -8,8 +7,7 @@
     "sourceSize": { "w": 16, "h": 24 },
     "duration": 100
    },
-   {
-    "filename": "man 1.aseprite",
+   "man 1.aseprite": {
     "frame": { "x": 16, "y": 0, "w": 16, "h": 24 },
     "rotated": false,
     "trimmed": false,
@@ -17,8 +15,7 @@
     "sourceSize": { "w": 16, "h": 24 },
     "duration": 100
    },
-   {
-    "filename": "man 2.aseprite",
+   "man 2.aseprite": {
     "frame": { "x": 32, "y": 0, "w": 16, "h": 24 },
     "rotated": false,
     "trimmed": false,
@@ -26,8 +23,7 @@
     "sourceSize": { "w": 16, "h": 24 },
     "duration": 100
    },
-   {
-    "filename": "man 3.aseprite",
+   "man 3.aseprite": {
     "frame": { "x": 48, "y": 0, "w": 16, "h": 24 },
     "rotated": false,
     "trimmed": false,
@@ -35,8 +31,7 @@
     "sourceSize": { "w": 16, "h": 24 },
     "duration": 100
    },
-   {
-    "filename": "man 4.aseprite",
+   "man 4.aseprite": {
     "frame": { "x": 64, "y": 0, "w": 16, "h": 24 },
     "rotated": false,
     "trimmed": false,
@@ -44,8 +39,7 @@
     "sourceSize": { "w": 16, "h": 24 },
     "duration": 100
    },
-   {
-    "filename": "man 5.aseprite",
+   "man 5.aseprite": {
     "frame": { "x": 80, "y": 0, "w": 16, "h": 24 },
     "rotated": false,
     "trimmed": false,
@@ -53,8 +47,7 @@
     "sourceSize": { "w": 16, "h": 24 },
     "duration": 100
    },
-   {
-    "filename": "man 6.aseprite",
+   "man 6.aseprite": {
     "frame": { "x": 96, "y": 0, "w": 16, "h": 24 },
     "rotated": false,
     "trimmed": false,
@@ -62,8 +55,7 @@
     "sourceSize": { "w": 16, "h": 24 },
     "duration": 100
    },
-   {
-    "filename": "man 7.aseprite",
+   "man 7.aseprite": {
     "frame": { "x": 112, "y": 0, "w": 16, "h": 24 },
     "rotated": false,
     "trimmed": false,
@@ -71,8 +63,7 @@
     "sourceSize": { "w": 16, "h": 24 },
     "duration": 100
    },
-   {
-    "filename": "man 8.aseprite",
+   "man 8.aseprite": {
     "frame": { "x": 128, "y": 0, "w": 16, "h": 24 },
     "rotated": false,
     "trimmed": false,
@@ -80,8 +71,7 @@
     "sourceSize": { "w": 16, "h": 24 },
     "duration": 100
    },
-   {
-    "filename": "man 9.aseprite",
+   "man 9.aseprite": {
     "frame": { "x": 144, "y": 0, "w": 16, "h": 24 },
     "rotated": false,
     "trimmed": false,
@@ -89,8 +79,7 @@
     "sourceSize": { "w": 16, "h": 24 },
     "duration": 100
    },
-   {
-    "filename": "man 10.aseprite",
+   "man 10.aseprite": {
     "frame": { "x": 160, "y": 0, "w": 16, "h": 24 },
     "rotated": false,
     "trimmed": false,
@@ -98,8 +87,7 @@
     "sourceSize": { "w": 16, "h": 24 },
     "duration": 100
    },
-   {
-    "filename": "man 11.aseprite",
+   "man 11.aseprite": {
     "frame": { "x": 176, "y": 0, "w": 16, "h": 24 },
     "rotated": false,
     "trimmed": false,
@@ -107,23 +95,23 @@
     "sourceSize": { "w": 16, "h": 24 },
     "duration": 100
    }
- ],
+ },
  "meta": {
   "app": "http://www.aseprite.org/",
-  "version": "1.2.8-x64",
-  "image": "examples/man.png",
+  "version": "1.3.17-beta2-x64",
+  "image": "man.png",
   "format": "RGBA8888",
   "size": { "w": 192, "h": 24 },
   "scale": "1",
   "frameTags": [
-   { "name": "IdleDown", "from": 0, "to": 0, "direction": "forward" },
-   { "name": "WalkDown", "from": 1, "to": 2, "direction": "forward" },
-   { "name": "IdleUp", "from": 3, "to": 3, "direction": "forward" },
-   { "name": "WalkUp", "from": 4, "to": 5, "direction": "forward" },
-   { "name": "IdleRight", "from": 6, "to": 6, "direction": "forward" },
-   { "name": "WalkRight", "from": 7, "to": 8, "direction": "forward" },
-   { "name": "IdleLeft", "from": 9, "to": 9, "direction": "forward" },
-   { "name": "WalkLeft", "from": 10, "to": 11, "direction": "forward" }
+   { "name": "IdleDown", "from": 0, "to": 0, "direction": "forward", "color": "#000000ff" },
+   { "name": "WalkDown", "from": 1, "to": 2, "direction": "forward", "color": "#000000ff" },
+   { "name": "IdleUp", "from": 3, "to": 3, "direction": "forward", "color": "#000000ff" },
+   { "name": "WalkUp", "from": 4, "to": 5, "direction": "forward", "color": "#000000ff" },
+   { "name": "IdleRight", "from": 6, "to": 6, "direction": "forward", "color": "#000000ff" },
+   { "name": "WalkRight", "from": 7, "to": 8, "direction": "forward", "color": "#000000ff" },
+   { "name": "IdleLeft", "from": 9, "to": 9, "direction": "forward", "color": "#000000ff" },
+   { "name": "WalkLeft", "from": 10, "to": 11, "direction": "forward", "color": "#000000ff" }
   ],
   "layers": [
    { "name": "Layer 1", "opacity": 255, "blendMode": "normal" }

@@ -42,7 +42,7 @@ function love.draw()
 	love.graphics.print("Ping-Pong", 350, 50)
 	countPingPong:draw(350, 80)
 
-	love.graphics.print("man.json", 15, 215)
+	love.graphics.print("man.json (I'm a hash-style export!)", 15, 215)
 	love.graphics.print("Walk around with arrow keys", 50, 250)
 	love.graphics.print(man.sprite.tagName, man.x, man.y + 30)
 	love.graphics.print((man.sprite.paused and "Paused" or "Playing"), man.x, man.y + 45)
