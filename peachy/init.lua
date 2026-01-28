@@ -373,7 +373,7 @@ function peachy:__convertHashFramesToArray()
 	local framesArray = {}
 
 	for filename, frameData in pairs(self.__jsonData.frames) do
-		local frameIndex = tonumber(filename:match("(%d+)%.aseprite"))
+		local frameIndex = tonumber(filename:match("(%d+)%.aseprite") or filename:match("(%d+)%.ase"))
 
 		if frameIndex then
 			frameData.filename = filename
