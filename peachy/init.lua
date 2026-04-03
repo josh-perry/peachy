@@ -504,4 +504,23 @@ function peachy:__initializeSlices()
 	end
 end
 
+--- Get all tag names
+---@return string[] List of tag names
+function peachy:getTagNames()
+	local names = {}
+
+	for name, _ in pairs(self.frameTags) do
+		table.insert(names, name)
+	end
+
+	return names
+end
+
+--- Check if a tag exists
+--- @param name string The tag name
+--- @return boolean
+function peachy:hasTag(name)
+	return self.frameTags[name] ~= nil
+end
+
 return peachy
