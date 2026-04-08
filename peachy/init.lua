@@ -375,10 +375,12 @@ function peachy:__convertHashFramesToArray()
 	for filename, frameData in pairs(self.__jsonData.frames) do
 		local frameIndex = tonumber(filename:match("(%d+)%.aseprite") or filename:match("(%d+)%.ase"))
 
-		if frameIndex then
-			frameData.filename = filename
-			table.insert(framesArray, { index = frameIndex, data = frameData })
+		if not frameIndex then
+			frameIndex = 0
 		end
+
+		frameData.filename = filename
+		table.insert(framesArray, { index = frameIndex, data = frameData })
 	end
 
 	self:__sortHashFrames(framesArray)
