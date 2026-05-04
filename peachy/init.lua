@@ -344,6 +344,21 @@ function peachy:drawSlice(name, x, y, rot, sx, sy, ox, oy)
 	love.graphics.draw(self.image, slice.quad, x, y, rot or 0, sx or 1, sy or 1, ox or 0, oy or 0)
 end
 
+--- Draw a slice if it exists, otherwise do nothing
+---@param name string The slice name
+---@param x number The x position
+---@param y number The y position
+---@param rot number? The rotation to draw at
+---@param sx number? The x scaling
+---@param sy number? The y scaling
+---@param ox number? The origin offset x
+---@param oy number? The origin offset y
+function peachy:tryDrawSlice(name, x, y, rot, sx, sy, ox, oy)
+	if self:hasSlice(name) then
+		self:drawSlice(name, x, y, rot, sx, sy, ox, oy)
+	end
+end
+
 --- Handles the ping-pong animation type.
 --- Should only be called when we actually want to bounce.
 --- Swaps the direction.
