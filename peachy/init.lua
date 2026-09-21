@@ -89,7 +89,13 @@ function peachy.new(data, image, initialTag)
 	end
 
 	-- Load the image
-	self.image = image or love.graphics.newImage(self.__jsonData.meta.image)
+	if image then
+		self.image = image
+	else
+		-- Get the directory that contains the json file
+		local jsonDirectory = (self.jsonPath and self.jsonPath:match(".+/")) or ""
+		self.image = love.graphics.newImage(jsonDirectory .. self.__jsonData.meta.image)
+	end
 
 	self:__initializeFrames()
 	self:__initializeTags()
