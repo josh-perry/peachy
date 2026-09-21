@@ -12,7 +12,7 @@ local countReverse = peachy.new("examples/countAndColours.json", spriteSheet, "N
 local countPingPong = peachy.new("examples/countAndColours.json", spriteSheet, "PingPong")
 local spinner = peachy.new("examples/spinner.json", love.graphics.newImage("examples/spinner.png"), "Spin")
 local sound = peachy.new("examples/sound.json", love.graphics.newImage("examples/sound.png"), "Bounce")
-local faces = peachy.new("examples/faces.json", love.graphics.newImage("examples/faces.png"))
+local faces = peachy.new("examples/faces.json")
 
 local currentFace = nil
 
