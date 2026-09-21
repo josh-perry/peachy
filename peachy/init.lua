@@ -18,7 +18,7 @@
 ---@field frameIndex integer?
 ---@field frame table?
 ---@field frameTimeAccumulator number
----@field jsonPath string|table
+---@field jsonPath string?
 ---@field private __jsonData table
 ---@field private __callbackOnLoop function?
 ---@field private __argsOnLoop table?
@@ -167,9 +167,9 @@ function peachy:getTag()
 	return self.tagName
 end
 
---- Get the json path passed in the object
----@return string|table
-function peachy:getJSON()
+--- Get the path to the json file, if one was given
+---@return string
+function peachy:getJSONPath()
 	return self.jsonPath
 end
 
